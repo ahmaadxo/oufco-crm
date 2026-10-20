@@ -1,0 +1,10 @@
+{
+  "name": "oufco-crm",
+  "version": "1.0.0",
+  "private": true,
+  "description": "OUFCO CRM: clients, suppliers, pump deals and follow-ups.",
+  "type": "module",
+  "dependencies": {
+    "@netlify/blobs": "^11.1.4"
+  }
+}
