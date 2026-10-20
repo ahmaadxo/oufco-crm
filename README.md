@@ -2,9 +2,10 @@
 
 Clients, suppliers, pump deals and follow-ups for OUFCO for engineering and contracting.
 
-- `public/` is the CRM page people open.
-- `netlify/functions/api.mjs` is the server part: sign-in, team accounts and saving records.
-- Records are stored in this Netlify project's storage (Netlify Blobs, store `oufco-crm`).
+- `index.html` (with `manifest.json` and the icons) is the CRM page people open.
+- `api.mjs` is the server part: sign-in, team accounts and saving records.
+- `build.mjs` runs on Netlify and puts those files where Netlify expects them.
+- Records are stored in this Netlify project's storage (Netlify Blobs, store `oufco-crm`), not in this repository.
 
 Every change committed to this repository publishes a new version on Netlify, which uses
 15 of the account's monthly credits, so make changes in batches.

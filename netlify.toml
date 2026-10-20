@@ -1,8 +1,9 @@
 # OUFCO CRM on Netlify.
-# The page in /public is ready to serve; Netlify bundles the server part in /netlify/functions.
+# build.mjs puts the page into /public and the server part into /netlify/functions,
+# so all files can be uploaded to GitHub flat, without folders.
 [build]
   publish = "public"
-  command = "npm install --no-audit --no-fund"
+  command = "node build.mjs && npm install --no-audit --no-fund"
 
 [functions]
   directory = "netlify/functions"
