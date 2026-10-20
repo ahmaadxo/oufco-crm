@@ -1,0 +1,2935 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>OUFCO CRM</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0a5c7a">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="OUFCO CRM">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a pump-room ledger. Nameplate wordmark in a top instrument bar, five working views,
+   records open in a right-hand sheet; deal stages drawn as a flanged pipe run. */
+:root {
+  --bg: #edf0ef;
+  --surface: #ffffff;
+  --surface-2: #f5f7f6;
+  --ink: #14201d;
+  --ink-2: #4a5753;
+  --ink-3: #74807c;
+  --line: #d4dcd9;
+  --line-2: #e5eae8;
+  --accent: #0a5c7a;
+  --accent-ink: #ffffff;
+  --accent-soft: #e1eef2;
+  --ok: #2b7a4b;
+  --ok-soft: #e3f1e8;
+  --warn: #9a6200;
+  --warn-soft: #fbf0d9;
+  --bad: #b3261e;
+  --bad-soft: #fbe6e4;
+  --st-1: #9fc4d2;
+  --st-2: #67a3ba;
+  --st-3: #34839f;
+  --st-4: #0a5c7a;
+  --st-won: #2b7a4b;
+  --st-lost: #9aa4a1;
+  --shadow: 0 1px 2px rgb(20 32 29 / .06), 0 8px 24px rgb(20 32 29 / .10);
+  --backdrop: rgb(10 20 18 / .38);
+  --font-display: "Archivo", "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", "IBM Plex Sans Arabic", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --r: 6px;
+  --top-h: 56px;
+  --bnav-h: 0px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1412; --surface: #151d1a; --surface-2: #1b2521; --ink: #e5ebe8; --ink-2: #a9b6b1; --ink-3: #7e8b86;
+    --line: #2b3732; --line-2: #222d29; --accent: #57b6d4; --accent-ink: #062530; --accent-soft: #123441;
+    --ok: #62c48f; --ok-soft: #15301f; --warn: #e2b03f; --warn-soft: #33290f; --bad: #f07a6f; --bad-soft: #3a1714;
+    --st-1: #2a5566; --st-2: #36718a; --st-3: #4693b0; --st-4: #6cc0dc; --st-won: #62c48f; --st-lost: #5e6a66;
+    --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 10px 28px rgb(0 0 0 / .45); --backdrop: rgb(0 0 0 / .55);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1412; --surface: #151d1a; --surface-2: #1b2521; --ink: #e5ebe8; --ink-2: #a9b6b1; --ink-3: #7e8b86;
+  --line: #2b3732; --line-2: #222d29; --accent: #57b6d4; --accent-ink: #062530; --accent-soft: #123441;
+  --ok: #62c48f; --ok-soft: #15301f; --warn: #e2b03f; --warn-soft: #33290f; --bad: #f07a6f; --bad-soft: #3a1714;
+  --st-1: #2a5566; --st-2: #36718a; --st-3: #4693b0; --st-4: #6cc0dc; --st-won: #62c48f; --st-lost: #5e6a66;
+  --shadow: 0 1px 2px rgb(0 0 0 / .3), 0 10px 28px rgb(0 0 0 / .45); --backdrop: rgb(0 0 0 / .55);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  background: var(--bg); color: var(--ink);
+  font: 400 14px/1.45 var(--font-body);
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--surface); }
+h1, h2, h3, p { margin: 0; }
+h1, h2, h3 { text-wrap: balance; }
+a { color: var(--accent); }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.num, .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.i { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.i-sm { width: 15px; height: 15px; }
+.eyebrow {
+  font: 600 11px/1.2 var(--font-display); font-stretch: 85%;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3);
+}
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+bdi { unicode-bidi: isolate; }
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 36px; padding: 0 14px; border-radius: var(--r);
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+  font-weight: 500; white-space: nowrap; text-decoration: none;
+}
+.btn:hover { border-color: var(--ink-3); }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover { filter: brightness(1.08); border-color: var(--accent); }
+.btn-ghost { background: transparent; border-color: transparent; color: var(--ink-2); }
+.btn-ghost:hover { background: var(--surface-2); border-color: transparent; color: var(--ink); }
+.btn-danger { color: var(--bad); }
+.btn-danger.armed { background: var(--bad); border-color: var(--bad); color: #fff; }
+.btn-sm { min-height: 28px; padding: 0 9px; font-size: 13px; }
+.btn[disabled] { opacity: .5; cursor: default; }
+.icon-btn {
+  display: inline-grid; place-items: center; width: 36px; height: 36px; flex: none;
+  border-radius: var(--r); border: 1px solid transparent; background: transparent; color: var(--ink-2);
+}
+.icon-btn:hover { background: var(--surface-2); color: var(--ink); }
+.icon-btn.sm { width: 30px; height: 30px; }
+.link { background: none; border: 0; padding: 0; color: var(--accent); font-weight: 500; text-decoration: none; font-size: 13px; }
+.link:hover { text-decoration: underline; }
+kbd {
+  font: 500 11px/1 var(--font-mono); color: var(--ink-3);
+  border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 2px 5px; background: var(--surface);
+}
+
+/* ---------- inputs ---------- */
+input[type="text"], input[type="search"], input[type="email"], input[type="tel"], input[type="number"],
+input[type="date"], input[type="datetime-local"], input[type="url"], input[type="password"], input:not([type]), select, textarea {
+  width: 100%; min-height: 38px; padding: 7px 10px;
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--line); border-radius: var(--r);
+}
+textarea { min-height: 84px; resize: vertical; line-height: 1.45; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+input::placeholder, textarea::placeholder { color: var(--ink-3); }
+input[type="number"] { font-family: var(--font-mono); }
+
+/* ---------- top bar ---------- */
+.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  background: var(--surface); border-bottom: 1px solid var(--line);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.top-in { max-width: 1320px; margin: 0 auto; height: var(--top-h); display: flex; align-items: center; gap: 14px; }
+.brand { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--ink); flex: none; }
+.plate {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 3px 7px; border: 1.5px solid var(--ink); border-radius: 3px;
+}
+.rivet { width: 5px; height: 5px; border-radius: 50%; border: 1.5px solid var(--ink-2); }
+.plate-word { font: 750 15px/1 var(--font-display); font-stretch: 78%; letter-spacing: .16em; padding-left: .16em; }
+.brand-tag { font: 500 11px/1 var(--font-mono); letter-spacing: .08em; color: var(--ink-3); }
+.tabs { display: flex; align-items: stretch; height: 100%; gap: 2px; }
+.tab {
+  display: flex; align-items: center; padding: 0 10px; height: 100%;
+  color: var(--ink-2); text-decoration: none; font-weight: 500;
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+}
+.tab:hover { color: var(--ink); }
+.tab[aria-current="page"] { color: var(--ink); border-bottom-color: var(--accent); }
+.tab .ct { font: 500 11px/1 var(--font-mono); color: var(--bad); margin-left: 5px; }
+.search { position: relative; margin-left: auto; flex: 1 1 280px; max-width: 380px; display: flex; align-items: center; }
+.search > .i { position: absolute; left: 10px; color: var(--ink-3); pointer-events: none; }
+.search input { padding-left: 34px; padding-right: 36px; background: var(--surface-2); }
+.search .kbd { position: absolute; right: 9px; pointer-events: none; }
+.search input:focus ~ .kbd { display: none; }
+.q-res {
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 40;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px; box-shadow: var(--shadow);
+  max-height: min(70vh, 520px); overflow: auto; padding: 6px;
+}
+.q-group { padding: 8px 8px 4px; }
+.q-item {
+  display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
+  padding: 7px 8px; border: 0; border-radius: 5px; background: transparent;
+}
+.q-item:hover, .q-item.on { background: var(--accent-soft); }
+.q-item .t { font-weight: 500; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.q-item .s { color: var(--ink-3); font-size: 12px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.q-item .tx { display: grid; min-width: 0; }
+.q-empty { padding: 14px 10px; color: var(--ink-2); }
+.menu-wrap { position: relative; flex: none; }
+.menu {
+  position: absolute; top: calc(100% + 6px); right: 0; z-index: 40; min-width: 240px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px; box-shadow: var(--shadow); padding: 6px;
+}
+.menu button {
+  display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
+  padding: 8px 10px; border: 0; border-radius: 5px; background: transparent; color: var(--ink);
+}
+.menu button:hover, .menu button:focus-visible { background: var(--surface-2); }
+.menu button .i { color: var(--ink-3); }
+.menu button kbd { margin-left: auto; }
+.menu hr { border: 0; border-top: 1px solid var(--line-2); margin: 6px 4px; }
+.menu-note { padding: 6px 10px 4px; color: var(--ink-3); font-size: 12px; max-width: 260px; }
+.only-m { display: none; }
+.banner {
+  background: var(--warn-soft); color: var(--ink); border-bottom: 1px solid var(--line);
+  padding-block: 8px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  font-size: 13px; text-align: center;
+}
+</style>
+<style>
+/* ---------- page frame ---------- */
+main {
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px calc(56px + var(--bnav-h));
+}
+.wrap { max-width: 1320px; margin: 0 auto; }
+.vh { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px 20px; flex-wrap: wrap; margin-bottom: 18px; }
+.vh > div:first-child { display: grid; gap: 4px; min-width: 0; }
+.vh h1 { font: 700 30px/1.05 var(--font-display); font-stretch: 82%; letter-spacing: .005em; }
+.lede { color: var(--ink-2); }
+.lede b { color: var(--ink); font-weight: 600; }
+.lede .bad { color: var(--bad); }
+.vh-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); min-width: 0; }
+.ph { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 12px; padding: 14px 16px 10px; }
+.ph h2 { font: 650 13px/1.2 var(--font-display); font-stretch: 88%; letter-spacing: .1em; text-transform: uppercase; }
+.ph-note { color: var(--ink-3); font-size: 12px; }
+.empty { padding: 18px 16px 20px; color: var(--ink-2); display: grid; gap: 10px; justify-items: start; }
+.empty h3 { font: 600 15px/1.3 var(--font-body); color: var(--ink); }
+.empty p { max-width: 52ch; }
+.empty .row-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.loading { padding: 18px 16px; color: var(--ink-3); }
+
+/* ---------- today ---------- */
+.today { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+.stack { display: grid; gap: 18px; min-width: 0; }
+.qadd { display: flex; gap: 8px; padding: 0 16px 12px; }
+.qadd input { flex: 1 1 auto; min-width: 0; }
+.qadd select { width: auto; flex: none; }
+.grp { padding: 10px 16px 4px; display: flex; align-items: center; gap: 8px; border-top: 1px solid var(--line-2); }
+.grp .eyebrow { color: var(--ink-2); }
+.grp .n { font: 500 11px/1 var(--font-mono); color: var(--ink-3); }
+.grp.over .eyebrow, .grp.over .n { color: var(--bad); }
+.fu-list { list-style: none; margin: 0; padding: 0 0 6px; }
+.fu { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; gap: 4px 10px; align-items: start; padding: 8px 16px; }
+.fu + .fu { border-top: 1px solid var(--line-2); }
+.tick {
+  width: 20px; height: 20px; margin-top: 1px; border-radius: 50%; border: 1.5px solid var(--ink-3);
+  background: transparent; display: grid; place-items: center; padding: 0; color: transparent;
+}
+.tick:hover { border-color: var(--accent); color: var(--accent); }
+.tick .i { width: 13px; height: 13px; stroke-width: 2.4; }
+.fu.done .tick { background: var(--ok); border-color: var(--ok); color: #fff; }
+.fu.done .fu-title { color: var(--ink-3); text-decoration: line-through; }
+.fu-title { background: none; border: 0; padding: 0; text-align: start; font-weight: 500; color: var(--ink); overflow-wrap: anywhere; }
+.fu-title:hover { color: var(--accent); }
+.fu-meta { grid-column: 2 / 3; display: flex; flex-wrap: wrap; gap: 4px 10px; color: var(--ink-3); font-size: 12px; }
+.fu-side { display: flex; align-items: center; gap: 2px; }
+.due { font: 500 12px/1 var(--font-mono); color: var(--ink-2); white-space: nowrap; padding: 3px 6px; border-radius: 4px; }
+.due.over { color: var(--bad); background: var(--bad-soft); }
+.due.today { color: var(--warn); background: var(--warn-soft); }
+.snz { opacity: .0; transition: opacity .12s; }
+.fu:hover .snz, .fu:focus-within .snz { opacity: 1; }
+@media (hover: none) { .snz { opacity: 1; } }
+.chip {
+  display: inline-flex; align-items: center; gap: 5px; max-width: 100%;
+  background: none; border: 0; padding: 0; color: var(--ink-2); font-size: 12px; text-align: start;
+}
+.chip:hover { color: var(--accent); }
+.chip .i { width: 13px; height: 13px; color: var(--ink-3); }
+.chip bdi { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.kpis { display: flex; gap: 12px 28px; flex-wrap: wrap; padding: 0 16px 14px; }
+.kpi { display: grid; gap: 3px; }
+.kpi .v { font: 500 20px/1.15 var(--font-mono); font-variant-numeric: tabular-nums; }
+.kpi .s { color: var(--ink-3); font-size: 12px; }
+.pipe { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 4px 16px 16px; }
+.seg { background: none; border: 0; padding: 0; text-align: left; display: grid; gap: 7px; color: var(--ink); min-width: 0; }
+.tube { position: relative; height: 16px; background: var(--c); }
+.seg:first-child .tube { border-radius: 3px 0 0 3px; }
+.seg:last-child .tube { border-radius: 0 3px 3px 0; }
+.seg + .seg .tube::before {
+  content: ""; position: absolute; left: -3px; top: -5px; bottom: -5px; width: 6px;
+  background: var(--surface); border: 1.5px solid var(--ink-3); border-radius: 2px;
+}
+.seg .lbl { padding-right: 6px; display: grid; gap: 2px; min-width: 0; }
+.seg .lbl .eyebrow { color: var(--ink-2); }
+.seg .lbl .c { font: 500 13px/1.2 var(--font-mono); }
+.seg .lbl .m { font: 400 12px/1.2 var(--font-mono); color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.seg:hover .eyebrow { color: var(--accent); }
+.seg.zero .tube { background: var(--line-2); }
+
+.qlist, .alist { list-style: none; margin: 0; padding: 0 0 8px; }
+.qlist li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 16px; border-top: 1px solid var(--line-2); }
+.qlist .who { display: grid; min-width: 0; }
+.qlist .who .s { color: var(--ink-3); font-size: 12px; }
+.alist li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; padding: 9px 16px; border-top: 1px solid var(--line-2); }
+.kico { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--line-2); }
+.kico .i { width: 15px; height: 15px; }
+.a-main { min-width: 0; display: grid; gap: 2px; }
+.a-sum { overflow-wrap: anywhere; white-space: pre-wrap; }
+.alist .a-sum { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; white-space: normal; }
+.a-meta { display: flex; flex-wrap: wrap; gap: 2px 10px; color: var(--ink-3); font-size: 12px; align-items: center; }
+.a-edit { background: none; border: 0; padding: 0; text-align: start; color: inherit; width: 100%; }
+.a-edit:hover .a-sum { color: var(--accent); }
+
+/* ---------- toolbar & filters ---------- */
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; margin-bottom: 14px; }
+.toolbar select { width: auto; }
+.tb-search { position: relative; flex: 1 1 240px; max-width: 360px; display: flex; align-items: center; }
+.tb-search .i { position: absolute; left: 10px; color: var(--ink-3); pointer-events: none; }
+.tb-search input { padding-left: 34px; }
+.tb-field { display: inline-flex; align-items: center; gap: 8px; color: var(--ink-2); font-size: 13px; }
+.segf { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+.segf button { border: 1px solid var(--line); background: var(--surface); color: var(--ink-2); border-radius: 999px; padding: 4px 11px; font-size: 13px; }
+.segf button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+
+/* ---------- pipeline board ---------- */
+.board-scroll { overflow-x: auto; padding-bottom: 10px; scroll-snap-type: x proximity; overscroll-behavior-x: contain; }
+.board { display: grid; grid-template-columns: repeat(4, minmax(210px, 1fr)) repeat(2, minmax(170px, .78fr)); gap: 12px; align-items: start; }
+.col { background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r); display: flex; flex-direction: column; min-height: 180px; scroll-snap-align: start; }
+.col-h { padding: 10px 12px 9px; border-top: 4px solid var(--c); border-radius: var(--r) var(--r) 0 0; display: grid; gap: 2px; }
+.col-h .t { display: flex; align-items: baseline; gap: 8px; }
+.col-h h3 { font: 650 13px/1.2 var(--font-display); font-stretch: 88%; letter-spacing: .1em; text-transform: uppercase; }
+.col-h .n { font: 500 12px/1 var(--font-mono); color: var(--ink-3); }
+.col-h .m { font: 500 13px/1.3 var(--font-mono); color: var(--ink-2); }
+.col-h .hint { color: var(--ink-3); font-size: 12px; }
+.cards { padding: 4px 8px 8px; display: grid; gap: 8px; align-content: start; flex: 1; }
+.col.over { outline: 2px dashed var(--accent); outline-offset: -2px; }
+.card {
+  display: grid; gap: 4px; width: 100%; text-align: start; color: var(--ink);
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 11px;
+  cursor: grab;
+}
+.card:hover { border-color: var(--ink-3); }
+.card.dragging { opacity: .45; }
+.card-t { font-weight: 600; overflow-wrap: anywhere; }
+.card-co { color: var(--ink-2); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.spec { font: 400 12px/1.35 var(--font-mono); color: var(--ink-3); overflow-wrap: anywhere; }
+.card-f { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 4px; }
+.card-f .money { font: 500 13px/1 var(--font-mono); }
+.card-f .cl { font-size: 12px; color: var(--ink-3); white-space: nowrap; }
+.card-f .cl.late { color: var(--bad); }
+.card .nx { font-size: 12px; color: var(--warn); }
+.col-add { margin: 0 8px 8px; border: 1px dashed var(--line); background: transparent; color: var(--ink-3); border-radius: var(--r); padding: 7px; font-size: 13px; }
+.col-add:hover { color: var(--accent); border-color: var(--accent); }
+.col-more { margin: 0 8px 8px; }
+
+/* ---------- people & company lists ---------- */
+.list { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+.lrow {
+  display: grid; align-items: center; gap: 12px; padding: 9px 16px;
+  border-top: 1px solid var(--line-2); width: 100%; text-align: start; background: transparent; border-inline: 0; border-bottom: 0;
+  color: var(--ink);
+}
+.lrow:first-child { border-top: 0; }
+.lrow:not(.lhead) { cursor: pointer; }
+.lrow:not(.lhead):hover { background: var(--surface-2); }
+.lhead { padding-block: 8px; background: var(--surface-2); }
+.lhead span { font: 600 11px/1.2 var(--font-display); font-stretch: 88%; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
+.l-people { grid-template-columns: minmax(0, 2.1fr) minmax(0, 1.5fr) minmax(0, 1.3fr) minmax(0, .9fr) 64px; }
+.l-co { grid-template-columns: minmax(0, 2.1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, .7fr) minmax(0, 1fr) minmax(0, .9fr); }
+.who { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.who .tx { display: grid; min-width: 0; }
+.who .t { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.who .s { color: var(--ink-3); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.who .s.m-only { display: none; }
+.av {
+  width: 32px; height: 32px; flex: none; border-radius: 50%; display: grid; place-items: center;
+  background: var(--accent-soft); color: var(--accent); font: 650 12px/1 var(--font-display); letter-spacing: .04em;
+}
+.av.co { border-radius: 5px; background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--line); }
+.av.lg { width: 44px; height: 44px; font-size: 15px; }
+.cell { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink-2); }
+.cell.mono { font-size: 13px; }
+.cell.dim { color: var(--ink-3); }
+.cell.late { color: var(--warn); }
+.cell.never { color: var(--ink-3); font-style: italic; }
+.acts { display: flex; gap: 2px; justify-content: flex-end; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-2); white-space: nowrap; }
+.pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--c, var(--ink-3)); flex: none; }
+.pill.s-active { --c: var(--ok); }
+.pill.s-talks { --c: var(--accent); }
+.pill.s-prospect { --c: var(--warn); }
+.pill.s-dormant { --c: var(--line); }
+.tag { display: inline-block; font-size: 12px; padding: 1px 7px; border-radius: 4px; background: var(--surface-2); border: 1px solid var(--line-2); color: var(--ink-2); }
+.more-row { padding: 10px 16px; border-top: 1px solid var(--line-2); color: var(--ink-3); font-size: 13px; }
+
+/* ---------- sheet (record panel) ---------- */
+dialog { color: var(--ink); background: var(--surface); border: 1px solid var(--line); padding: 0; }
+dialog::backdrop { background: var(--backdrop); }
+.sheet {
+  margin: 0 0 0 auto; width: min(580px, 100%); max-width: 100%; height: 100%; max-height: 100%;
+  border-width: 0 0 0 1px; border-radius: 0; box-shadow: var(--shadow);
+}
+.sheet[open] { display: flex; flex-direction: column; }
+#sheet-in { display: flex; flex-direction: column; min-height: 0; flex: 1; }
+.sh-h {
+  position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 14px; align-items: center;
+  padding: calc(18px + env(safe-area-inset-top, 0px)) calc(56px + env(safe-area-inset-right, 0px)) 14px 22px;
+  border-bottom: 1px solid var(--line);
+}
+.sh-h .tx { display: grid; gap: 3px; min-width: 0; }
+.sh-h h2 { font: 700 24px/1.12 var(--font-display); font-stretch: 85%; overflow-wrap: anywhere; }
+.sh-h .s { color: var(--ink-2); }
+.sh-close { position: absolute; top: calc(12px + env(safe-area-inset-top, 0px)); right: calc(12px + env(safe-area-inset-right, 0px)); }
+.sh-bar { display: flex; flex-wrap: wrap; gap: 6px; padding: 12px 22px; border-bottom: 1px solid var(--line-2); }
+.sh-body { flex: 1; overflow: auto; padding: 6px calc(22px + env(safe-area-inset-right, 0px)) calc(28px + env(safe-area-inset-bottom, 0px)) 22px; overscroll-behavior: contain; }
+.sec { padding-top: 16px; }
+.sec > .eyebrow { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; }
+.kv { display: grid; grid-template-columns: 116px minmax(0, 1fr); gap: 8px 14px; margin: 0; }
+.kv dt { color: var(--ink-3); font-size: 13px; padding-top: 1px; }
+.kv dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.kv .ph-line { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+.kv .ph-line .mono { user-select: all; }
+.notes { white-space: pre-wrap; overflow-wrap: anywhere; background: var(--surface-2); border: 1px solid var(--line-2); border-radius: var(--r); padding: 10px 12px; }
+.mini { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line-2); border-radius: var(--r); }
+.mini li + li { border-top: 1px solid var(--line-2); }
+.mini .mi { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; width: 100%; padding: 9px 12px; background: none; border: 0; text-align: start; color: var(--ink); }
+.mini button.mi:hover { background: var(--surface-2); }
+.mini .mi .tx { display: grid; min-width: 0; }
+.mini .mi .t { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mini .mi .s { color: var(--ink-3); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mini .fu { padding: 8px 12px; }
+.tl { list-style: none; margin: 0; padding: 0; }
+.tl li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; padding: 10px 0; border-top: 1px solid var(--line-2); }
+.tl li:first-child { border-top: 0; }
+.none { color: var(--ink-3); font-size: 13px; }
+.sh-foot { display: flex; justify-content: space-between; gap: 8px; margin-top: 26px; padding-top: 14px; border-top: 1px solid var(--line-2); color: var(--ink-3); font-size: 12px; align-items: center; flex-wrap: wrap; }
+
+/* stage stepper: the same pipe run, one segment per stage */
+.stepper { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) auto auto; gap: 0; align-items: end; }
+.step { background: none; border: 0; padding: 0; display: grid; gap: 6px; text-align: left; color: var(--ink-2); min-width: 0; }
+.step .tube { background: var(--line-2); height: 12px; }
+.step.past .tube { background: var(--c); opacity: .45; }
+.step.cur .tube { background: var(--c); }
+.step.cur { color: var(--ink); font-weight: 600; }
+.step .eyebrow { color: inherit; padding-right: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.step:hover .eyebrow { color: var(--accent); }
+.step:nth-child(4) .tube { border-radius: 0 3px 3px 0; }
+.end { margin-left: 10px; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 4px 11px; font-size: 13px; color: var(--ink-2); align-self: end; }
+.end.won.cur { background: var(--ok); border-color: var(--ok); color: #fff; }
+.end.lost.cur { background: var(--ink-3); border-color: var(--ink-3); color: #fff; }
+.end:hover { border-color: var(--ink-3); }
+.end + .end { margin-left: 6px; }
+
+/* ---------- modal form ---------- */
+.modal { width: min(640px, calc(100% - 32px)); max-width: none; max-height: calc(100% - 48px); margin: auto; border-radius: 8px; box-shadow: var(--shadow); }
+.modal[open] { display: flex; flex-direction: column; }
+#mform { display: flex; flex-direction: column; min-height: 0; flex: 1; }
+.m-h { padding: 18px 20px 4px; display: flex; justify-content: space-between; gap: 12px; align-items: start; }
+.m-h h2 { font: 700 21px/1.15 var(--font-display); font-stretch: 85%; }
+.m-b { padding: 12px 20px 18px; overflow: auto; flex: 1; overscroll-behavior: contain; }
+.m-f { padding: 12px 20px 16px; border-top: 1px solid var(--line-2); display: flex; gap: 8px; align-items: center; }
+.m-f .sp { flex: 1; }
+.m-err { color: var(--bad); font-size: 13px; }
+.fgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 14px; }
+.fgrid .full { grid-column: 1 / -1; }
+.fld { display: grid; gap: 5px; min-width: 0; align-content: start; }
+.fld > label, .fld > .lab { font-size: 12px; font-weight: 500; color: var(--ink-2); }
+.fld .req { color: var(--bad); }
+.fld .help { font-size: 12px; color: var(--ink-3); }
+.fld.bad input, .fld.bad textarea { border-color: var(--bad); }
+.pair { display: grid; grid-template-columns: minmax(0, 1fr) 92px; gap: 6px; }
+.trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.unit { position: relative; display: flex; align-items: center; }
+.unit input { padding-right: 52px; }
+.unit span { position: absolute; right: 10px; font: 400 12px/1 var(--font-mono); color: var(--ink-3); pointer-events: none; }
+.quick { display: flex; flex-wrap: wrap; gap: 4px; }
+.quick button { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 3px 10px; font-size: 12px; color: var(--ink-2); }
+.quick button:hover { border-color: var(--accent); color: var(--accent); }
+.kinds { display: flex; flex-wrap: wrap; gap: 6px; }
+.kinds label { position: relative; }
+.kinds input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.kinds span { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; font-size: 13px; color: var(--ink-2); background: var(--surface); }
+.kinds input:checked + span { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.kinds input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+.check { display: flex; align-items: center; gap: 8px; font-weight: 500; }
+.check input { width: 18px; height: 18px; accent-color: var(--accent); }
+.sub-box { border: 1px solid var(--line-2); background: var(--surface-2); border-radius: var(--r); padding: 12px; display: grid; gap: 10px; }
+.pick { display: grid; gap: 4px; }
+.pick-sel { display: flex; align-items: center; gap: 8px; min-height: 38px; padding: 4px 6px 4px 10px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface-2); }
+.pick-sel .tx { flex: 1; min-width: 0; display: grid; }
+.pick-sel .t { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pick-sel .s { color: var(--ink-3); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pick-list { list-style: none; margin: 0; padding: 4px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); max-height: 232px; overflow: auto; }
+.pick-list li { display: flex; align-items: center; gap: 9px; padding: 7px 8px; border-radius: 5px; cursor: pointer; }
+.pick-list li.on, .pick-list li:hover { background: var(--accent-soft); }
+.pick-list li .tx { display: grid; min-width: 0; }
+.pick-list li .t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pick-list li .s { color: var(--ink-3); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pick-list li.create .t { color: var(--accent); font-weight: 500; }
+.pick-list .pk-none { padding: 8px; color: var(--ink-3); cursor: default; }
+.pick-list .pk-none:hover { background: none; }
+
+/* ---------- toast & bottom nav ---------- */
+.toast {
+  position: fixed; left: 50%; bottom: calc(20px + var(--bnav-h) + env(safe-area-inset-bottom, 0px)); z-index: 60;
+  transform: translate(-50%, 12px); opacity: 0; pointer-events: none;
+  background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 8px; box-shadow: var(--shadow);
+  max-width: min(520px, calc(100vw - 32px)); font-weight: 500; transition: opacity .18s, transform .18s;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+.toast.err { background: var(--bad); color: #fff; }
+.toast.has-act.show { pointer-events: auto; }
+.toast button { background: none; border: 0; padding: 0; margin-left: 14px; color: inherit; font-weight: 650; text-decoration: underline; text-underline-offset: 3px; }
+a.seg { text-decoration: none; }
+.qlist .s { color: var(--ink-3); font-size: 12px; }
+.sec > .eyebrow .n { font: 500 11px/1 var(--font-mono); letter-spacing: 0; color: var(--ink-3); }
+.bnav {
+  display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+  background: var(--surface); border-top: 1px solid var(--line);
+  padding-left: max(8px, env(safe-area-inset-left, 0px)); padding-right: max(8px, env(safe-area-inset-right, 0px));
+  padding-block: 4px calc(4px + env(safe-area-inset-bottom, 0px));
+}
+.bnav a { display: grid; justify-items: center; gap: 2px; padding: 6px 2px; color: var(--ink-3); text-decoration: none; font-size: 11px; font-weight: 500; min-width: 0; position: relative; }
+.bnav a[aria-current="page"] { color: var(--accent); }
+.bnav a .ct { position: absolute; top: 2px; left: calc(50% + 8px); min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: var(--bad); color: #fff; font: 600 10px/16px var(--font-mono); text-align: center; }
+.ro .w { display: none !important; }
+
+@media (max-width: 1080px) {
+  .l-co { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, .8fr) minmax(0, 1fr) minmax(0, .9fr); }
+  .l-co .c-sector { display: none; }
+}
+@media (max-width: 900px) {
+  :root { --bnav-h: 62px; }
+  .tabs { display: none; }
+  .bnav { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .today { grid-template-columns: minmax(0, 1fr); }
+  .search { display: none; }
+  .only-m { display: inline-grid; }
+  body.searching .search {
+    display: flex; position: fixed; left: 0; right: 0; top: calc(env(safe-area-inset-top, 0px) + var(--top-h)); max-width: none; z-index: 25;
+    background: var(--surface); border-bottom: 1px solid var(--line);
+    padding-block: 8px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  body.searching .search > .i { left: calc(max(16px, env(safe-area-inset-left, 0px)) + 10px); }
+  body.searching .search .kbd { display: none; }
+  body.searching .q-res { left: max(16px, env(safe-area-inset-left, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); }
+  .kbd-hint { display: none; }
+}
+@media (max-width: 760px) {
+  .lhead { display: none; }
+  .l-people { grid-template-columns: minmax(0, 1fr) auto; }
+  .l-people .c-co, .l-people .c-phone { display: none; }
+  .l-people .acts { display: none; }
+  .l-co { grid-template-columns: minmax(0, 1fr) auto; }
+  .l-co .c-type, .l-co .c-sector, .l-co .c-status, .l-co .c-open { display: none; }
+  .who .s.m-only { display: block; }
+  .who .s.d-only { display: none; }
+  .board { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(78vw, 1fr); }
+}
+@media (max-width: 600px) {
+  main { padding-top: 18px; }
+  .vh h1 { font-size: 26px; }
+  .brand-tag { display: none; }
+  #new-btn span { display: none; }
+  #new-btn { width: 36px; padding: 0; }
+  input[type="text"], input[type="search"], input[type="email"], input[type="tel"], input[type="number"],
+  input[type="date"], input[type="datetime-local"], input[type="url"], input[type="password"], input:not([type]), select, textarea { font-size: 16px; }
+  .modal { width: 100%; height: 100%; max-height: 100%; margin: 0; border-radius: 0; border: 0; }
+  .m-h { padding-top: calc(16px + env(safe-area-inset-top, 0px)); }
+  .m-f { padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px)); }
+  .fgrid { grid-template-columns: minmax(0, 1fr); }
+  .kv { grid-template-columns: 96px minmax(0, 1fr); }
+  .sh-h { padding-left: 16px; }
+  .sh-bar { padding-inline: 16px; }
+  .sh-body { padding-left: 16px; padding-right: calc(16px + env(safe-area-inset-right, 0px)); }
+  .qadd { flex-wrap: wrap; }
+  .qadd input { flex-basis: 100%; }
+  .qadd select { flex: 1; }
+  .pipe .seg .lbl .m { font-size: 11px; }
+  .pipe .seg .eyebrow, .step .eyebrow { letter-spacing: .03em; font-size: 10.5px; }
+  .stepper { grid-template-columns: repeat(4, minmax(0, 1fr)); row-gap: 12px; }
+  .stepper .end { grid-row: 2; justify-self: start; margin-left: 0; }
+  .stepper .end.won { grid-column: 1 / 3; }
+  .stepper .end.lost { grid-column: 3 / 5; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
+</style>
+<style>
+/* ---------- standalone page frame ---------- */
+:root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; }
+img { max-width: 100%; }
+
+/* ---------- sign-in and first-time setup ---------- */
+body.gated .top, body.gated main, body.gated .bnav, body.gated .banner { display: none !important; }
+.gate {
+  position: fixed; inset: 0; z-index: 50; overflow: auto; background: var(--bg);
+  display: grid; place-items: center;
+  padding-block: calc(24px + env(safe-area-inset-top, 0px)) calc(24px + env(safe-area-inset-bottom, 0px));
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.gate-card {
+  width: min(430px, 100%); background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+  padding: 26px 24px 24px; display: grid; gap: 18px; box-shadow: var(--shadow);
+}
+.gate-plate { justify-self: start; }
+.gate-head { display: grid; gap: 6px; }
+.gate-head h1 { font: 700 27px/1.1 var(--font-display); font-stretch: 82%; }
+.gate-form { display: grid; gap: 13px; }
+.gate-form .btn-primary { min-height: 42px; font-size: 15px; }
+.gate-err { color: var(--bad); font-size: 13px; }
+.gate-err:empty { display: none; }
+.gate-foot { color: var(--ink-3); font-size: 12px; }
+
+/* ---------- account menu ---------- */
+.acct-btn { width: 40px; height: 40px; }
+.av.sm { width: 30px; height: 30px; font-size: 11px; }
+.menu-who { display: grid; gap: 2px; padding: 8px 10px 10px; margin-bottom: 6px; border-bottom: 1px solid var(--line-2); }
+.menu-who b { font-weight: 600; overflow-wrap: anywhere; }
+.menu-who span { color: var(--ink-3); font-size: 12px; overflow-wrap: anywhere; }
+body:not(.is-admin) [data-admin-only] { display: none !important; }
+
+/* ---------- team and access ---------- */
+.m-note { color: var(--ink-2); font-size: 13px; margin-bottom: 14px; max-width: 60ch; }
+.team { list-style: none; margin: 0 0 20px; padding: 0; border: 1px solid var(--line-2); border-radius: var(--r); }
+.tm { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 8px 10px; align-items: center; padding: 11px 12px; }
+.tm + .tm { border-top: 1px solid var(--line-2); }
+.tm .tx { display: grid; min-width: 0; }
+.tm .t { font-weight: 600; overflow-wrap: anywhere; }
+.tm .s { color: var(--ink-3); font-size: 12px; overflow-wrap: anywhere; }
+.tm .ctl { grid-column: 2 / -1; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.tm .ctl select { width: auto; min-height: 30px; padding: 3px 8px; font-size: 13px; }
+.tm.off .t { color: var(--ink-3); text-decoration: line-through; }
+.secret { grid-column: 2 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; background: var(--warn-soft); border-radius: var(--r); padding: 8px 10px; font-size: 13px; }
+.secret .mono { user-select: all; font-weight: 500; font-size: 14px; }
+@media (max-width: 600px) { .gate-card { padding: 22px 18px 20px; } }
+</style>
+</head>
+<body class="gated">
+<section class="gate" id="gate" aria-labelledby="gate-title">
+  <div class="gate-card">
+    <span class="plate gate-plate" aria-hidden="true"><span class="rivet"></span><span class="plate-word">OUFCO</span><span class="rivet"></span></span>
+    <div class="gate-head"><h1 id="gate-title">Opening your CRM…</h1><p class="lede" id="gate-lede"></p></div>
+    <form id="gate-form" class="gate-form" novalidate></form>
+  </div>
+</section>
+<div class="banner" id="banner" hidden></div>
+<header class="top" id="top">
+  <div class="top-in">
+    <a class="brand" href="#today" data-go="today" aria-label="OUFCO CRM home">
+      <span class="plate" aria-hidden="true"><span class="rivet"></span><span class="plate-word">OUFCO</span><span class="rivet"></span></span>
+      <span class="brand-tag">CRM</span>
+    </a>
+    <nav class="tabs" aria-label="Sections">
+      <a class="tab" href="#today" data-go="today">Today<span class="ct" id="tab-ct"></span></a>
+      <a class="tab" href="#pipeline" data-go="pipeline">Pipeline</a>
+      <a class="tab" href="#people" data-go="people">People</a>
+      <a class="tab" href="#companies" data-go="companies">Companies</a>
+      <a class="tab" href="#followups" data-go="followups">Follow-ups</a>
+    </nav>
+    <div class="search" id="search" role="search">
+      <span data-ic="search"></span>
+      <input id="q" type="search" placeholder="Search names, phone numbers, deals" autocomplete="off" spellcheck="false" aria-label="Search the CRM" aria-controls="q-res" aria-expanded="false" dir="auto">
+      <kbd class="kbd kbd-hint">/</kbd>
+      <div class="q-res" id="q-res" role="listbox" aria-label="Search results" hidden></div>
+    </div>
+    <button class="icon-btn only-m" id="q-open" type="button" aria-label="Search"><span data-ic="search"></span></button>
+    <div class="menu-wrap w">
+      <button class="btn btn-primary" id="new-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="new-menu" aria-label="New"><span data-ic="plus"></span><span>New</span></button>
+      <div class="menu" id="new-menu" role="menu" hidden>
+        <button type="button" role="menuitem" data-new="activity"><span data-ic="phone"></span>Log a call, visit or message<kbd class="kbd-hint">L</kbd></button>
+        <button type="button" role="menuitem" data-new="task"><span data-ic="check-sq"></span>Follow-up<kbd class="kbd-hint">F</kbd></button>
+        <hr>
+        <button type="button" role="menuitem" data-new="deal"><span data-ic="deal"></span>Deal</button>
+        <button type="button" role="menuitem" data-new="person"><span data-ic="user"></span>Person</button>
+        <button type="button" role="menuitem" data-new="company"><span data-ic="building"></span>Company</button>
+      </div>
+    </div>
+    <div class="menu-wrap">
+      <button class="icon-btn acct-btn" id="more-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="more-menu" aria-label="Account, team and export"><span class="av sm" id="acct-av" aria-hidden="true">·</span></button>
+      <div class="menu" id="more-menu" role="menu" hidden>
+        <div class="menu-who"><b id="acct-name"></b><span id="acct-sub"></span></div>
+        <button type="button" role="menuitem" data-acct="team" data-admin-only><span data-ic="user"></span>Team and access</button>
+        <button type="button" role="menuitem" data-acct="password"><span data-ic="edit"></span>Change password</button>
+        <hr>
+        <button type="button" role="menuitem" data-export="xlsx"><span data-ic="download"></span>Export to Excel (.xlsx)</button>
+        <button type="button" role="menuitem" data-export="json"><span data-ic="download"></span>Download a backup (.json)</button>
+        <button type="button" role="menuitem" data-acct="import" data-admin-only><span data-ic="upload"></span>Import a backup</button>
+        <hr>
+        <button type="button" role="menuitem" data-acct="signout"><span data-ic="signout"></span>Sign out</button>
+        <p class="menu-note" id="export-note"></p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <div class="wrap">
+
+    <section class="view" id="v-today" aria-labelledby="h-today">
+      <div class="vh">
+        <div>
+          <p class="eyebrow" id="today-date">Today</p>
+          <h1 id="h-today">Today</h1>
+          <p class="lede" id="today-lede">Loading your follow-ups and deals…</p>
+        </div>
+        <div class="vh-actions w">
+          <button class="btn" type="button" data-new="activity"><span data-ic="phone"></span>Log activity</button>
+        </div>
+      </div>
+      <div class="today">
+        <section class="panel" aria-labelledby="h-fu">
+          <header class="ph"><h2 id="h-fu">Follow-ups</h2><a class="link" href="#followups" data-go="followups">All follow-ups</a></header>
+          <form class="qadd w" id="qa1" data-qadd autocomplete="off">
+            <input id="qa1-title" type="text" placeholder="Add a follow-up, e.g. Send revised quotation" aria-label="New follow-up" dir="auto">
+            <select id="qa1-due" aria-label="Due">
+              <option value="0">Today</option><option value="1">Tomorrow</option><option value="7">Next week</option><option value="">No date</option>
+            </select>
+            <button class="btn" type="submit">Add</button>
+          </form>
+          <div id="today-fu"><p class="loading">Loading…</p></div>
+        </section>
+        <div class="stack">
+          <section class="panel" aria-labelledby="h-pipe">
+            <header class="ph"><h2 id="h-pipe">Pipeline</h2><a class="link" href="#pipeline" data-go="pipeline">Open the board</a></header>
+            <div id="today-pipe"><p class="loading">Loading…</p></div>
+          </section>
+          <section class="panel" aria-labelledby="h-quiet">
+            <header class="ph"><h2 id="h-quiet">Going quiet</h2><span class="ph-note">Active accounts, no contact in 30+ days</span></header>
+            <div id="today-quiet"><p class="loading">Loading…</p></div>
+          </section>
+          <section class="panel" aria-labelledby="h-recent">
+            <header class="ph"><h2 id="h-recent">Recent activity</h2></header>
+            <div id="today-acts"><p class="loading">Loading…</p></div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="v-pipeline" aria-labelledby="h-pipeline" hidden>
+      <div class="vh">
+        <div>
+          <p class="eyebrow">Quotations and orders</p>
+          <h1 id="h-pipeline">Pipeline</h1>
+          <p class="lede" id="pipe-lede"></p>
+        </div>
+        <div class="vh-actions"><button class="btn btn-primary w" type="button" data-new="deal"><span data-ic="plus"></span>New deal</button></div>
+      </div>
+      <div class="toolbar">
+        <div class="segf" id="deal-type" role="group" aria-label="Deal type"></div>
+        <label class="tb-field" for="closed-range">Won and lost
+          <select id="closed-range"><option value="90">Last 90 days</option><option value="all">All time</option></select>
+        </label>
+      </div>
+      <div class="board-scroll"><div class="board" id="board"></div></div>
+    </section>
+
+    <section class="view" id="v-people" aria-labelledby="h-people" hidden>
+      <div class="vh">
+        <div>
+          <p class="eyebrow">Contacts</p>
+          <h1 id="h-people">People</h1>
+          <p class="lede" id="people-lede"></p>
+        </div>
+        <div class="vh-actions"><button class="btn btn-primary w" type="button" data-new="person"><span data-ic="plus"></span>New person</button></div>
+      </div>
+      <div class="toolbar">
+        <div class="tb-search"><span data-ic="search"></span><input id="people-q" type="search" placeholder="Filter by name, company, phone or tag" aria-label="Filter people" autocomplete="off" dir="auto"></div>
+        <select id="people-type" aria-label="Company type"></select>
+        <select id="people-sort" aria-label="Sort people">
+          <option value="name">Name A–Z</option><option value="recent">Recently contacted</option><option value="stale">Longest without contact</option><option value="added">Recently added</option>
+        </select>
+      </div>
+      <div id="people-list"></div>
+    </section>
+
+    <section class="view" id="v-companies" aria-labelledby="h-companies" hidden>
+      <div class="vh">
+        <div>
+          <p class="eyebrow">Clients, suppliers and partners</p>
+          <h1 id="h-companies">Companies</h1>
+          <p class="lede" id="co-lede"></p>
+        </div>
+        <div class="vh-actions"><button class="btn btn-primary w" type="button" data-new="company"><span data-ic="plus"></span>New company</button></div>
+      </div>
+      <div class="toolbar">
+        <div class="tb-search"><span data-ic="search"></span><input id="co-q" type="search" placeholder="Filter by name, city or sector" aria-label="Filter companies" autocomplete="off" dir="auto"></div>
+        <select id="co-type" aria-label="Company type"></select>
+        <select id="co-status" aria-label="Status"></select>
+        <select id="co-sort" aria-label="Sort companies">
+          <option value="name">Name A–Z</option><option value="recent">Recently contacted</option><option value="stale">Longest without contact</option><option value="open">Largest open deals</option>
+        </select>
+      </div>
+      <div id="co-list"></div>
+    </section>
+
+    <section class="view" id="v-followups" aria-labelledby="h-followups" hidden>
+      <div class="vh">
+        <div>
+          <p class="eyebrow">Reminders</p>
+          <h1 id="h-followups">Follow-ups</h1>
+          <p class="lede" id="fu-lede"></p>
+        </div>
+        <div class="vh-actions"><button class="btn btn-primary w" type="button" data-new="task"><span data-ic="plus"></span>New follow-up</button></div>
+      </div>
+      <div class="panel">
+        <form class="qadd w" id="qa2" data-qadd autocomplete="off" style="padding-top:14px">
+          <input id="qa2-title" type="text" placeholder="Add a follow-up, e.g. Call about the booster set" aria-label="New follow-up" dir="auto">
+          <select id="qa2-due" aria-label="Due">
+            <option value="0">Today</option><option value="1">Tomorrow</option><option value="7">Next week</option><option value="">No date</option>
+          </select>
+          <button class="btn" type="submit">Add</button>
+        </form>
+        <div id="fu-all"><p class="loading">Loading…</p></div>
+      </div>
+      <p style="margin-top:14px"><button class="btn btn-ghost" type="button" id="show-done" aria-expanded="false">Show completed</button></p>
+      <div class="panel" id="fu-done" hidden></div>
+    </section>
+
+  </div>
+</main>
+
+<nav class="bnav" aria-label="Sections">
+  <a href="#today" data-go="today"><span data-ic="today"></span>Today<span class="ct" id="bnav-ct" hidden></span></a>
+  <a href="#pipeline" data-go="pipeline"><span data-ic="board"></span>Pipeline</a>
+  <a href="#people" data-go="people"><span data-ic="user"></span>People</a>
+  <a href="#companies" data-go="companies"><span data-ic="building"></span>Companies</a>
+  <a href="#followups" data-go="followups"><span data-ic="check-sq"></span>Follow-ups</a>
+</nav>
+
+<input type="file" id="import-file" accept=".json,application/json" hidden>
+<dialog class="sheet" id="sheet" aria-labelledby="sheet-title"><div id="sheet-in"></div></dialog>
+<dialog class="modal" id="modal" aria-labelledby="m-title"><form id="mform" novalidate autocomplete="off"></form></dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<datalist id="dl-places"></datalist>
+<datalist id="dl-brands"></datalist>
+<datalist id="dl-pumps"></datalist>
+<script>
+(() => {
+'use strict';
+
+/* ======================= reference data ======================= */
+const STAGES = [
+  { id: 'inquiry', label: 'Inquiry', hint: 'New request or lead' },
+  { id: 'selection', label: 'Selection', hint: 'Pump selection or site survey' },
+  { id: 'quoted', label: 'Quoted', hint: 'Quotation sent' },
+  { id: 'negotiation', label: 'Negotiation', hint: 'Price, terms, delivery' },
+  { id: 'won', label: 'Won', hint: 'Order confirmed' },
+  { id: 'lost', label: 'Lost', hint: 'Closed without an order' },
+];
+const OPEN = ['inquiry', 'selection', 'quoted', 'negotiation'];
+const STAGE = Object.fromEntries(STAGES.map(s => [s.id, s]));
+const STAGE_VAR = { inquiry: '--st-1', selection: '--st-2', quoted: '--st-3', negotiation: '--st-4', won: '--st-won', lost: '--st-lost' };
+const DEAL_TYPES = ['Supply', 'Maintenance', 'Spare parts', 'Service contract', 'Rental', 'Other'];
+const PUMP_TYPES = ['Centrifugal', 'Submersible', 'Borehole', 'Booster set', 'Sewage & drainage', 'Firefighting', 'Dewatering', 'Mechanical seals'];
+const BRANDS = ['Flygt', 'Lowara', 'Godwin', 'Grundfos', 'Tsurumi'];
+const CO_TYPES = ['Client', 'Contractor', 'Consultant', 'Supplier', 'Partner', 'Other'];
+const SECTORS = ['Agriculture', 'Industry', 'Water treatment', 'Construction', 'Mining', 'Government', 'Other'];
+const STATUSES = ['Prospect', 'In talks', 'Active', 'Dormant'];
+const STATUS_CLS = { 'Prospect': 's-prospect', 'In talks': 's-talks', 'Active': 's-active', 'Dormant': 's-dormant' };
+const KINDS = [
+  { id: 'call', label: 'Call', icon: 'phone' },
+  { id: 'whatsapp', label: 'WhatsApp', icon: 'chat' },
+  { id: 'email', label: 'Email', icon: 'mail' },
+  { id: 'meeting', label: 'Meeting', icon: 'meeting' },
+  { id: 'visit', label: 'Site visit', icon: 'pin' },
+  { id: 'note', label: 'Note', icon: 'note' },
+];
+const KIND = Object.fromEntries(KINDS.map(k => [k.id, k]));
+const CURRENCIES = ['EGP', 'USD', 'EUR'];
+const PLACES = ['Cairo', 'New Cairo', 'Nasr City', 'Maadi', 'Giza', '6th of October', 'Sheikh Zayed', '10th of Ramadan', 'Obour',
+  'Badr', 'New Administrative Capital', 'Sadat City', 'Alexandria', 'Borg El Arab', 'Ain Sokhna', 'Suez', 'Ismailia', 'Port Said',
+  'Damietta', 'Mansoura', 'Tanta', 'Zagazig', 'Banha', 'Fayoum', 'Beni Suef', 'Minya', 'Assiut', 'Sohag', 'Qena', 'Luxor', 'Aswan',
+  'Hurghada', 'Sharm El Sheikh', 'El Alamein', 'Marsa Matrouh', 'Wadi El Natrun', 'Toshka', 'East Owainat'];
+const QUIET_DAYS = 30;
+const COL = { people: 'people', companies: 'companies', deals: 'deals', acts: 'activities', tasks: 'tasks' };
+const VIEWS = ['today', 'pipeline', 'people', 'companies', 'followups'];
+
+/* ======================= state ======================= */
+const S = {
+  db: null, user: null, dl: null, uid: null,
+  phase: 'connecting',            // connecting | live | offline | revoked
+  canWrite: true, writeKnown: false,
+  people: new Map(), companies: new Map(), deals: new Map(),
+  acts: new Map(), extraActs: new Map(), tasks: new Map(), doneTasks: new Map(),
+  loaded: { people: false, companies: false, deals: false, acts: false, tasks: false, done: false },
+  view: 'today', lastView: null, sheet: null, lc: { p: new Map(), c: new Map() },
+  armed: null, dragId: null, boardDirty: false,
+  ui: { dealType: 'all', closed: '90', peopleQ: '', peopleType: 'all', peopleSort: 'name',
+        coQ: '', coType: 'all', coStatus: 'all', coSort: 'name', showDone: false },
+};
+const PREF_KEYS = ['dealType', 'closed', 'peopleType', 'peopleSort', 'coType', 'coStatus', 'coSort'];
+const LS_KEY = 'oufco-crm-ui-v1';
+function loadPrefs() {
+  try {
+    const v = JSON.parse(localStorage.getItem(LS_KEY) || 'null');
+    if (v && typeof v === 'object') {
+      for (const k of PREF_KEYS) if (typeof v[k] === 'string') S.ui[k] = v[k];
+      if (typeof v.view === 'string') S.lastView = v.view;
+    }
+  } catch (e) { /* storage unavailable: defaults are fine */ }
+}
+function savePrefs() {
+  try {
+    const o = { view: S.view };
+    for (const k of PREF_KEYS) o[k] = S.ui[k];
+    localStorage.setItem(LS_KEY, JSON.stringify(o));
+  } catch (e) { /* ignore */ }
+}
+
+/* ======================= small utilities ======================= */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const nowISO = () => new Date().toISOString();
+const pad = n => String(n).padStart(2, '0');
+const dayStr = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const today = () => dayStr(new Date());
+const parseDay = s => { const [y, m, d] = String(s).split('-').map(Number); return new Date(y, (m || 1) - 1, d || 1); };
+const addDays = (s, n) => { const d = parseDay(s); d.setDate(d.getDate() + n); return dayStr(d); };
+const diffDays = (a, b) => Math.round((parseDay(b) - parseDay(a)) / 864e5);
+const isoDay = iso => iso ? dayStr(new Date(iso)) : '';
+const plural = (n, w, p) => `${n} ${n === 1 ? w : (p || w + 's')}`;
+const num = v => { const n = Number(v); return Number.isFinite(n) && n > 0 ? n : 0; };
+const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+function fmtDay(s, withDow) {
+  if (!s) return '';
+  const d = parseDay(s);
+  const y = d.getFullYear() !== new Date().getFullYear() ? ' ' + d.getFullYear() : '';
+  return (withDow ? DOW[d.getDay()] + ' ' : '') + d.getDate() + ' ' + MON[d.getMonth()] + y;
+}
+function relDue(s) {
+  if (!s) return 'No date';
+  const n = diffDays(today(), s);
+  if (n === 0) return 'Today';
+  if (n === 1) return 'Tomorrow';
+  if (n === -1) return 'Yesterday';
+  if (n < 0) return `${-n} days late`;
+  if (n < 7) return DOW[parseDay(s).getDay()];
+  return fmtDay(s);
+}
+function fmtTime(d) { return `${pad(d.getHours())}:${pad(d.getMinutes())}`; }
+function fmtWhen(iso) {
+  if (!iso) return '';
+  const d = new Date(iso), ds = dayStr(d), n = diffDays(ds, today());
+  if (n === 0) return `Today ${fmtTime(d)}`;
+  if (n === 1) return `Yesterday ${fmtTime(d)}`;
+  return `${fmtDay(ds)}, ${fmtTime(d)}`;
+}
+function ago(iso) {
+  if (!iso) return '';
+  const n = diffDays(isoDay(iso), today());
+  if (n < 0) return fmtDay(isoDay(iso));
+  if (n === 0) return 'Today';
+  if (n === 1) return 'Yesterday';
+  if (n < 30) return `${n} days ago`;
+  if (n < 60) return 'A month ago';
+  if (n < 365) return `${Math.round(n / 30)} months ago`;
+  return fmtDay(isoDay(iso));
+}
+const daysSince = iso => iso ? Math.max(0, diffDays(isoDay(iso), today())) : null;
+function localInput(iso) { const d = iso ? new Date(iso) : new Date(); return `${dayStr(d)}T${fmtTime(d)}`; }
+function fromLocalInput(v) { const d = new Date(v); return isNaN(d) ? nowISO() : d.toISOString(); }
+function monthStartISO() { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), 1).toISOString(); }
+
+const nf0 = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
+const nfc = new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 });
+const nfq = new Intl.NumberFormat('en-US', { maximumFractionDigits: 1 });
+function money(v, cur, compact) {
+  const n = Number(v);
+  if (!Number.isFinite(n) || v === '' || v == null) return '';
+  return `${cur || 'EGP'} ${compact ? nfc.format(n) : nf0.format(n)}`;
+}
+function sums(deals) {
+  const o = {};
+  for (const d of deals) { const v = Number(d.value); if (!v) continue; const c = d.currency || 'EGP'; o[c] = (o[c] || 0) + v; }
+  return o;
+}
+function fmtSums(o, compact = true) {
+  const ks = Object.keys(o).sort((a, b) => (a === 'EGP' ? -1 : b === 'EGP' ? 1 : a.localeCompare(b)));
+  return ks.length ? ks.map(k => money(o[k], k, compact)).join(' · ') : '—';
+}
+
+/* Egyptian numbers: people type 010…, +20 10…, 0020…, or Arabic-Indic digits ٠١٠… */
+const toLatinDigits = s => String(s || '').replace(/[٠-٩۰-۹]/g, c => String(c.charCodeAt(0) & 0xF));
+const digits = s => toLatinDigits(s).replace(/\D+/g, '');
+function nsn(s) {
+  let d = digits(s);
+  if (d.startsWith('00')) d = d.slice(2);
+  if (d.startsWith('20') && d.length >= 11) d = d.slice(2);
+  if (d.startsWith('0')) d = d.slice(1);
+  return d;
+}
+function waNumber(s) {
+  let d = digits(s);
+  if (d.length < 8) return '';
+  if (d.startsWith('00')) d = d.slice(2);
+  else if (d.startsWith('0')) d = '20' + d.slice(1);
+  else if (d.length === 10 && d.startsWith('1')) d = '20' + d;
+  return d;
+}
+/* Arabic-aware search: أ/إ/آ → ا, ة → ه, ى → ي, no tashkeel or tatweel */
+function norm(s) {
+  return toLatinDigits(s).normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase()
+    .replace(/[ً-ٰٟـ]/g, '').replace(/[أإآٱ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي')
+    .replace(/ؤ/g, 'و').replace(/ئ/g, 'ي').replace(/\s+/g, ' ').trim();
+}
+const HONORIFIC = /^(eng|dr|mr|mrs|ms|prof|م|د|أ|ا|مهندس|المهندس|دكتور|الدكتور|استاذ|أستاذ|الأستاذ)\.?$/i;
+function initials(name) {
+  const w = String(name || '').trim().split(/\s+/).filter(x => x && !HONORIFIC.test(x));
+  if (!w.length) return '?';
+  const first = s => Array.from(/^ال./.test(s) ? s.slice(2) : s)[0] || '';  // السيد → س
+  const a = first(w[0]);
+  const b = w.length > 1 ? first(w[w.length - 1]) : '';
+  return (a + b).toUpperCase();
+}
+function splitTags(s) {
+  const seen = new Set(), out = [];
+  for (const t of String(s || '').split(/[,،;]/)) { const v = t.trim(); const k = norm(v); if (v && !seen.has(k)) { seen.add(k); out.push(v); } }
+  return out.slice(0, 12);
+}
+function clean(o) { const r = {}; for (const [k, v] of Object.entries(o)) if (v !== undefined) r[k] = v; return r; }
+
+/* ======================= icons ======================= */
+const IC = {
+  search: '<circle cx="11" cy="11" r="7"/><path d="M20.5 20.5 16 16"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  phone: '<rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M11 18.5h2"/>',
+  chat: '<path d="M4 5.5h16V16H10l-5 4v-4H4z"/>',
+  mail: '<rect x="3" y="5.5" width="18" height="13" rx="1.5"/><path d="m3.5 7 8.5 6 8.5-6"/>',
+  meeting: '<circle cx="9" cy="8" r="3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><path d="M15.5 5.2a3 3 0 0 1 0 5.6M17.5 14.3c1.8.6 3 2.3 3 4.7"/>',
+  pin: '<path d="M12 21s-6-6-6-11a6 6 0 0 1 12 0c0 5-6 11-6 11z"/><circle cx="12" cy="10" r="2.3"/>',
+  note: '<path d="M6 3h9l4 4v14H6z"/><path d="M14.5 3v4.5H19M9 12.5h7M9 16.5h5"/>',
+  check: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+  'check-sq': '<rect x="3.5" y="3.5" width="17" height="17" rx="2"/><path d="m8 12 3 3 5-6"/>',
+  x: '<path d="M6 6l12 12M18 6 6 18"/>',
+  edit: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>',
+  trash: '<path d="M4 7h16M9.5 7V4h5v3M6 7l1 13h10l1-13"/>',
+  user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/>',
+  building: '<path d="M4 21V5l8-2v18M12 9h8v12M2 21h20M7.5 8H9M7.5 12H9M7.5 16H9M15.5 13H17M15.5 17H17"/>',
+  deal: '<rect x="3" y="7.5" width="18" height="12.5" rx="1.5"/><path d="M8.5 7.5v-3h7v3M3 13h18"/>',
+  clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+  copy: '<rect x="9" y="9" width="11" height="11" rx="1.5"/><path d="M5.5 15h-1a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1H14a1 1 0 0 1 1 1v1"/>',
+  more: '<circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/>',
+  download: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
+  today: '<rect x="4" y="5" width="16" height="15" rx="1.5"/><path d="M4 10h16M8.5 3v4M15.5 3v4"/><path d="M8 14h3v3H8z"/>',
+  board: '<rect x="3.5" y="4" width="4.5" height="16" rx="1"/><rect x="9.75" y="4" width="4.5" height="10" rx="1"/><rect x="16" y="4" width="4.5" height="7" rx="1"/>',
+  snooze: '<path d="M5 12h12M13 8l4 4-4 4M20 5v14"/>',
+  upload: '<path d="M12 20V9M7 14l5-5 5 5M5 4h14"/>',
+  signout: '<path d="M14 4h5v16h-5M10 8l-4 4 4 4M6 12h10"/>',
+};
+const ic = (n, cls = '') => `<svg class="i ${cls}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${IC[n] || ''}</svg>`;
+
+/* ======================= lookups & derived data ======================= */
+const pe = id => (id && S.people.get(id)) || null;
+const co = id => (id && S.companies.get(id)) || null;
+const de = id => (id && S.deals.get(id)) || null;
+const ready = k => S.loaded[k] || S.phase === 'offline' || S.phase === 'revoked';
+function allActs() { const m = new Map(S.extraActs); for (const [k, v] of S.acts) m.set(k, v); return [...m.values()]; }
+function allTasks() { const m = new Map(S.doneTasks); for (const [k, v] of S.tasks) m.set(k, v); return [...m.values()]; }
+const byAtDesc = (a, b) => String(b.at || '').localeCompare(String(a.at || ''));
+const byDue = (a, b) => (a.due || '9999').localeCompare(b.due || '9999') || String(a.createdAt || '').localeCompare(String(b.createdAt || ''));
+const byName = (a, b) => String(a.name || '').localeCompare(String(b.name || ''), undefined, { sensitivity: 'base' });
+
+function lastContactMap() {
+  const p = new Map(), c = new Map(), now = nowISO();
+  const put = (m, k, v) => { if (k && v && (!m.get(k) || v > m.get(k))) m.set(k, v); };
+  for (const a of allActs()) {
+    if (!a.at || a.kind === 'note' || a.at > now) continue;
+    put(p, a.personId, a.at);
+    put(c, a.companyId || (pe(a.personId) || {}).companyId, a.at);
+  }
+  for (const x of S.people.values()) { put(p, x.id, x.lastContactAt); }
+  for (const x of S.companies.values()) put(c, x.id, x.lastContactAt);
+  for (const x of S.people.values()) put(c, x.companyId, p.get(x.id));
+  return { p, c };
+}
+function actsFor(field, id) { return allActs().filter(a => a[field] === id).sort(byAtDesc); }
+function tasksFor(field, id) { return [...S.tasks.values()].filter(t => t[field] === id).sort(byDue); }
+function nextTaskFor(field, id) { return tasksFor(field, id)[0] || null; }
+function linkFrom(val) {
+  const i = String(val || '').indexOf(':');
+  const k = i > 0 ? val.slice(0, i) : '', id = i > 0 ? val.slice(i + 1) : '';
+  if (k === 'person') { const p = pe(id); return { personId: id, companyId: (p && p.companyId) || '', dealId: '' }; }
+  if (k === 'company') return { personId: '', companyId: id, dealId: '' };
+  if (k === 'deal') { const d = de(id); return { personId: (d && d.personId) || '', companyId: (d && d.companyId) || '', dealId: id }; }
+  return { personId: '', companyId: '', dealId: '' };
+}
+const aboutVal = r => r.dealId ? 'deal:' + r.dealId : r.personId ? 'person:' + r.personId : r.companyId ? 'company:' + r.companyId : '';
+const chip = (kind, id, icon, label) =>
+  `<button type="button" class="chip" data-open="${kind}" data-id="${esc(id)}">${ic(icon)}<bdi>${esc(label)}</bdi></button>`;
+function aboutChips(r, skip = {}) {
+  const out = [];
+  const p = !skip.person && pe(r.personId), c = !skip.company && co(r.companyId), d = !skip.deal && de(r.dealId);
+  if (p) out.push(chip('person', p.id, 'user', p.name));
+  if (c) out.push(chip('company', c.id, 'building', c.name));
+  if (d) out.push(chip('deal', d.id, 'deal', d.title));
+  return out.join('');
+}
+function specLine(d) {
+  const parts = [];
+  if (d.brand) parts.push(d.brand);
+  if (d.pumpType) parts.push(d.pumpType);
+  const q = num(d.flow), h = num(d.head);
+  if (q || h) parts.push(`${q ? nfq.format(q) + ' m³/h' : '–'} @ ${h ? nfq.format(h) + ' m' : '–'}`);
+  if (num(d.qty) > 1) parts.push('×' + num(d.qty));
+  return parts.join(' · ');
+}
+
+/* ======================= search ======================= */
+const tokens = q => norm(q).split(' ').filter(Boolean);
+const hay = (...parts) => norm(parts.filter(Boolean).join(' '));
+const isPhoneQuery = q => /^[\d\s+().\-٠-٩۰-۹]+$/.test(String(q).trim()) && digits(q).length >= 4;
+function phoneHit(q, ...phones) { const qd = nsn(q); return !!qd && phones.some(p => p && nsn(p).includes(qd)); }
+function personMatches(p, q) {
+  if (isPhoneQuery(q)) return phoneHit(q, p.phone, p.phone2);
+  const c = co(p.companyId);
+  return tokens(q).every(t => hay(p.name, p.role, p.email, (p.tags || []).join(' '), c && c.name, p.notes).includes(t));
+}
+function companyMatches(c, q) {
+  if (isPhoneQuery(q)) return phoneHit(q, c.phone);
+  return tokens(q).every(t => hay(c.name, c.city, c.sector, c.type, c.email, c.website, c.address, c.notes).includes(t));
+}
+function dealMatches(d, q) {
+  if (isPhoneQuery(q)) return false;
+  const c = co(d.companyId), p = pe(d.personId);
+  return tokens(q).every(t => hay(d.title, c && c.name, p && p.name, d.brand, d.pumpType, d.type, d.notes).includes(t));
+}
+function rank(name, q) { const n = norm(name), t = tokens(q)[0] || ''; return n.startsWith(t) ? 0 : n.includes(' ' + t) ? 1 : 2; }
+function searchAll(q, limit = 6) {
+  if (!tokens(q).length) return { people: [], companies: [], deals: [] };
+  const sortBy = key => (a, b) => rank(a[key], q) - rank(b[key], q) || String(a[key]).localeCompare(String(b[key]));
+  return {
+    people: [...S.people.values()].filter(p => personMatches(p, q)).sort(sortBy('name')).slice(0, limit),
+    companies: [...S.companies.values()].filter(c => companyMatches(c, q)).sort(sortBy('name')).slice(0, limit),
+    deals: [...S.deals.values()].filter(d => dealMatches(d, q)).sort(sortBy('title')).slice(0, limit),
+  };
+}
+
+/* ======================= storage ======================= */
+async function withRetry(fn) {
+  try { return await fn(); }
+  catch (e) {
+    if (e && e.code === 'unavailable') { await sleep(300 + Math.random() * 700); return fn(); }
+    throw e;
+  }
+}
+function canEdit() { return !!S.db && S.canWrite; }
+function guardWrite() {
+  if (canEdit()) return true;
+  toast(S.phase === 'connecting' ? 'Still connecting to your records. Try again in a moment.'
+    : S.db ? 'You can view this CRM but not change it.' : 'Changes can’t be saved in this view.', 'err');
+  return false;
+}
+async function create(col, data) {
+  if (!canEdit()) throw { code: 'readonly' };
+  const ref = S.db.collection(col).doc();
+  const t = nowISO();
+  await withRetry(() => ref.set(clean({ ...data, createdAt: t, updatedAt: t, by: S.uid || undefined })));
+  return ref.id;
+}
+async function patch(col, id, data, touch = true) {
+  if (!canEdit()) throw { code: 'readonly' };
+  const body = clean(touch ? { ...data, updatedAt: nowISO() } : data);
+  await withRetry(() => S.db.collection(col).doc(id).update(body));
+}
+async function removeDoc(col, id) {
+  if (!canEdit()) throw { code: 'readonly' };
+  await withRetry(() => S.db.collection(col).doc(id).delete());
+}
+function errText(e) {
+  const code = e && e.code;
+  if (e && e.api && e.message) return e.message;
+  if (code === 'readonly') return 'Changes can’t be saved in this view.';
+  if (code === 'quota_exceeded') return 'The CRM’s storage is full. Delete old records, then try again.';
+  if (code === 'invalid_argument' && !S.writeKnown) return 'You can view this CRM but not change it.';
+  if (code === 'revoked') return 'Access to this CRM changed. Reload the page.';
+  if (code === 'resource_exhausted') return 'Too many changes at once. Wait a moment and try again.';
+  return `Couldn’t save${code ? ' (' + code + ')' : ''}. Check your connection and try again.`;
+}
+function writeErr(e) {
+  if (e && e.code === 'invalid_argument' && !S.writeKnown) { S.canWrite = false; scheduleRender(); }
+  toast(errText(e), 'err');
+}
+async function bumpContact(links, at) {
+  if (!at || at > nowISO()) return;
+  const jobs = [];
+  const p = pe(links.personId), c = co(links.companyId);
+  if (p && (!p.lastContactAt || at > p.lastContactAt)) jobs.push(patch(COL.people, p.id, { lastContactAt: at }, false));
+  if (c && (!c.lastContactAt || at > c.lastContactAt)) jobs.push(patch(COL.companies, c.id, { lastContactAt: at }, false));
+  await Promise.all(jobs);
+}
+async function resolveCompany(val) {
+  const v = String(val || '');
+  if (v.startsWith('company:')) return v.slice(8);
+  if (v.startsWith('new-company:')) {
+    const name = v.slice(12).trim();
+    if (!name) return '';
+    const hit = [...S.companies.values()].find(c => norm(c.name) === norm(name));
+    if (hit) return hit.id;
+    return create(COL.companies, { name, type: 'Client', sector: '', status: 'Prospect', city: '', phone: '', email: '', website: '', address: '', notes: '' });
+  }
+  return '';
+}
+
+/* ======================= toast ======================= */
+let toastTimer = 0, toastFn = null;
+function toast(msg, kind = '', action = null) {
+  const el = $('#toast');
+  // an open modal makes the rest of the page inert, so the toast lives inside the top dialog
+  const host = $('#modal').open ? $('#modal') : $('#sheet').open ? $('#sheet') : document.body;
+  if (el.parentElement !== host) host.appendChild(el);
+  el.innerHTML = `<span>${esc(msg)}</span>${action ? `<button type="button" id="toast-act">${esc(action.label)}</button>` : ''}`;
+  el.className = 'toast show' + (kind ? ' ' + kind : '') + (action ? ' has-act' : '');
+  toastFn = action ? action.fn : null;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.className = 'toast'; toastFn = null; }, kind === 'err' ? 6500 : action ? 6000 : 2600);
+}
+
+/* ======================= server connection ======================= */
+const API_URL = '/api';
+const ROLE_LABEL = { admin: 'Admin', member: 'Member', viewer: 'View only' };
+const apiError = (code, message, status) => ({ api: true, code, message, status });
+async function api(action, opts = {}) {
+  const method = opts.method || 'GET';
+  let res;
+  try {
+    res = await fetch(`${API_URL}?action=${encodeURIComponent(action)}${opts.query || ''}`, {
+      method, credentials: 'same-origin', cache: 'no-store',
+      headers: method === 'POST' ? { 'Content-Type': 'application/json', 'X-OUFCO-CRM': '1' } : { 'Accept': 'application/json' },
+      body: method === 'POST' ? JSON.stringify(opts.body || {}) : undefined,
+    });
+  } catch (e) { throw apiError('network', 'Can’t reach the server. Check your internet connection.', 0); }
+  let data = null;
+  try { data = await res.json(); } catch (e) { data = null; }
+  if (res.ok && data && !data.error) return data;
+  if (res.status === 401 && !['login', 'setup', 'me', 'password'].includes(action)) signedOut('Your session ended. Sign in again.');
+  if (data && data.error) throw apiError(data.error, data.message || 'The server refused that.', res.status);
+  if (res.status === 404) throw apiError('no_server', 'The CRM’s server part isn’t running. In Netlify, check that this project was imported from GitHub and the last deploy is Published.', 404);
+  throw apiError('server', 'The server didn’t answer properly. Try again in a minute.', res.status);
+}
+
+/* ---------- local copy of the records, kept in step with the server ---------- */
+const DOCS = { people: new Map(), companies: new Map(), deals: new Map(), activities: new Map(), tasks: new Map() };
+const PENDING = new Set(), SEQ = new Map(), SKIP = new Map();
+let lastSeq = 0, syncRun = null, pollTimer = 0, wantFull = false;
+S.team = new Map();
+function newId() {
+  const a = new Uint8Array(16); crypto.getRandomValues(a);
+  return Array.from(a, n => 'abcdefghijklmnopqrstuvwxyz0123456789'[n % 36]).join('');
+}
+function putDoc(col, id, data) {
+  const m = DOCS[col]; if (!m) return;
+  if (data == null) m.delete(id); else m.set(id, Object.assign({}, data, { id }));
+}
+function applyServerDoc(d) {
+  const key = d.col + '/' + d.id, s = Number(d.seq) || 0;
+  if (s && s < (SEQ.get(key) || 0)) return false;
+  SEQ.set(key, s);
+  putDoc(d.col, d.id, d.deleted ? null : d.data);
+  return true;
+}
+function derive() {
+  S.people = DOCS.people; S.companies = DOCS.companies; S.deals = DOCS.deals; S.acts = DOCS.activities;
+  const open = new Map(), done = [];
+  for (const t of DOCS.tasks.values()) { if (t.done) done.push(t); else open.set(t.id, t); }
+  done.sort((a, b) => String(b.doneAt || '').localeCompare(String(a.doneAt || '')));
+  S.tasks = open; S.doneTasks = new Map(done.slice(0, 150).map(t => [t.id, t]));
+}
+/* changes show at once; if the server refuses, the record goes back to how it was */
+async function remoteWrite(op, col, id, data) {
+  const key = col + '/' + id, before = DOCS[col] && DOCS[col].get(id);
+  if (op === 'delete') putDoc(col, id, null);
+  else if (op === 'set') putDoc(col, id, data);
+  else if (before) putDoc(col, id, Object.assign({}, before, data));
+  derive(); scheduleRender();
+  PENDING.add(key);
+  let mine = null;
+  try {
+    const r = await api('write', { method: 'POST', body: { writes: [{ op, col, id, data: op === 'delete' ? undefined : data }] } });
+    for (const d of r.docs || []) { applyServerDoc(d); if (d.col === col && d.id === id) mine = d; }
+  } catch (e) {
+    if (before) DOCS[col].set(id, before); else if (DOCS[col]) DOCS[col].delete(id);
+    throw e;
+  } finally {
+    PENDING.delete(key);
+    const skipped = SKIP.get(key) || 0; SKIP.delete(key);
+    // someone else changed this record while ours was saving: reload everything to be safe
+    if (skipped && (!mine || skipped > (Number(mine.seq) || 0))) sync(true);
+    derive(); scheduleRender();
+  }
+}
+const dbAdapter = {
+  collection: col => ({
+    doc: id => {
+      const did = id || newId();
+      return { id: did, set: d => remoteWrite('set', col, did, d), update: d => remoteWrite('update', col, did, d), delete: () => remoteWrite('delete', col, did) };
+    },
+  }),
+};
+function sync(full) {
+  if (syncRun) { if (full) wantFull = true; return syncRun; }
+  syncRun = (async () => {
+    let changed = false;
+    try {
+      let since = full ? 0 : lastSeq, page = 0, more = true;
+      while (more && page++ < 100) {
+        const r = await api('sync', { query: '&since=' + encodeURIComponent(String(since)) });
+        if (since === 0 && page === 1) { for (const m of Object.values(DOCS)) m.clear(); SEQ.clear(); changed = true; }
+        for (const d of r.docs || []) {
+          const key = d.col + '/' + d.id;
+          if (PENDING.has(key)) { SKIP.set(key, Math.max(SKIP.get(key) || 0, Number(d.seq) || 0)); continue; }
+          if (applyServerDoc(d)) changed = true;
+        }
+        since = lastSeq = (r.seq === undefined || r.seq === null || r.seq === '') ? since : r.seq;
+        more = !!r.more;
+      }
+      if (S.netErr) { S.netErr = false; changed = true; }
+      if (Object.values(S.loaded).some(v => !v)) { for (const k of Object.keys(S.loaded)) S.loaded[k] = true; changed = true; }
+    } catch (e) {
+      if (e && e.code !== 'auth' && S.me && !S.netErr) { S.netErr = true; changed = true; }
+    } finally {
+      syncRun = null;
+      if (changed) { derive(); scheduleRender(); }
+      if (wantFull) { wantFull = false; setTimeout(() => sync(true), 0); }
+    }
+  })();
+  return syncRun;
+}
+const IDLE_MS = 5 * 60 * 1000;
+let lastActive = Date.now();
+function markActive() {
+  const wasIdle = Date.now() - lastActive > IDLE_MS;
+  lastActive = Date.now();
+  if (wasIdle && S.me && document.visibilityState === 'visible') sync(false);
+}
+['pointerdown', 'keydown', 'touchstart', 'wheel'].forEach(ev => window.addEventListener(ev, markActive, { passive: true, capture: true }));
+window.addEventListener('focus', () => { if (S.me) { lastActive = Date.now(); sync(false); } });
+function startPolling() {
+  stopPolling();
+  pollTimer = setInterval(() => {
+    if (document.visibilityState === 'visible' && S.me && Date.now() - lastActive < IDLE_MS) sync(false);
+  }, 60000);
+}
+function stopPolling() { clearInterval(pollTimer); pollTimer = 0; }
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && S.me) sync(false); });
+async function loadTeam() {
+  try {
+    const r = await api('users');
+    S.team = new Map((r.users || []).map(u => [String(u.id), u]));
+    scheduleRender();
+    return r.users || [];
+  } catch (e) { return []; }
+}
+const authorName = id => (S.team.size > 1 && id != null && S.team.get(String(id))) ? S.team.get(String(id)).name : '';
+
+/* ---------- sign-in, first-time setup, sign-out ---------- */
+function gateField(id, label, type, extra = '') {
+  return `<div class="fld"><label for="${id}">${esc(label)}</label><input id="${id}" type="${type}" ${extra}></div>`;
+}
+function showGate(mode, msg) {
+  document.body.classList.add('gated');
+  if (S.sheet) closeSheet();
+  if ($('#modal').open) closeModal();
+  closeMenus();
+  const g = $('#gate'), f = $('#gate-form'), title = $('#gate-title'), lede = $('#gate-lede');
+  g.hidden = false; f.dataset.mode = mode;
+  if (mode === 'loading') { title.textContent = 'Opening your CRM…'; lede.textContent = ''; f.innerHTML = ''; return; }
+  if (mode === 'error') {
+    title.textContent = 'Can’t open the CRM';
+    lede.textContent = msg || 'The server didn’t answer.';
+    f.innerHTML = '<button class="btn btn-primary" type="submit" id="gate-submit">Try again</button>';
+    return;
+  }
+  if (mode === 'setup') {
+    title.textContent = 'Set up OUFCO CRM';
+    lede.textContent = 'Create the first admin account. The setup key is in the install instructions.';
+    f.innerHTML = gateField('g-key', 'Setup key', 'text', 'autocomplete="off" spellcheck="false" placeholder="XXXX-XXXX-XXXX"') +
+      gateField('g-name', 'Your name', 'text', 'autocomplete="name" dir="auto"') +
+      gateField('g-email', 'Email', 'email', 'autocomplete="username"') +
+      gateField('g-pass', 'Password', 'password', 'autocomplete="new-password" minlength="8"') +
+      gateField('g-pass2', 'Password again', 'password', 'autocomplete="new-password"') +
+      '<label class="check" for="g-seed"><input id="g-seed" type="checkbox" checked> Add the records you already have: Tsurumi, its three contacts and two follow-ups</label>' +
+      '<p class="gate-err" id="gate-err" role="alert"></p><button class="btn btn-primary" type="submit" id="gate-submit">Create admin account</button>';
+    $('#g-key').focus();
+    return;
+  }
+  title.textContent = 'Sign in';
+  lede.textContent = msg || 'Use the email and password from your OUFCO CRM account.';
+  f.innerHTML = gateField('g-email', 'Email', 'email', 'autocomplete="username"') +
+    gateField('g-pass', 'Password', 'password', 'autocomplete="current-password"') +
+    '<p class="gate-err" id="gate-err" role="alert"></p><button class="btn btn-primary" type="submit" id="gate-submit">Sign in</button>' +
+    '<p class="gate-foot">Forgot your password? Ask your OUFCO admin to set a new one.</p>';
+  $('#g-email').focus();
+}
+async function gateSubmit(e) {
+  e.preventDefault();
+  const f = $('#gate-form'), mode = f.dataset.mode, btn = $('#gate-submit'), err = $('#gate-err');
+  if (mode === 'error') { checkSession(); return; }
+  if (!btn || btn.disabled) return;
+  if (err) err.textContent = '';
+  btn.disabled = true;
+  try {
+    let r;
+    if (mode === 'setup') {
+      if ($('#g-pass').value !== $('#g-pass2').value) throw apiError('invalid', 'The two passwords don’t match.');
+      r = await api('setup', { method: 'POST', body: { key: $('#g-key').value, name: $('#g-name').value, email: $('#g-email').value, password: $('#g-pass').value, seed: $('#g-seed').checked } });
+    } else {
+      r = await api('login', { method: 'POST', body: { email: $('#g-email').value, password: $('#g-pass').value } });
+    }
+    signedIn(r.user);
+  } catch (x) {
+    if (err) err.textContent = (x && x.message) || 'That didn’t work. Try again.';
+  } finally { if (btn.isConnected) btn.disabled = false; }
+}
+function signedIn(user) {
+  S.me = user; S.uid = String(user.id); S.canWrite = user.role !== 'viewer'; S.writeKnown = true;
+  S.db = dbAdapter; S.dl = true; S.phase = 'live'; S.netErr = false;
+  for (const k of Object.keys(S.loaded)) S.loaded[k] = false;
+  document.body.classList.remove('gated');
+  document.body.classList.toggle('is-admin', user.role === 'admin');
+  $('#gate').hidden = true;
+  $('#acct-av').textContent = initials(user.name);
+  $('#acct-name').textContent = user.name;
+  $('#acct-sub').textContent = `${ROLE_LABEL[user.role] || user.role}${user.email ? ' · ' + user.email : ''}`;
+  render();
+  sync(true); loadTeam(); startPolling();
+}
+function signedOut(msg) {
+  if (!S.me && !$('#gate').hidden) return;
+  S.me = null; S.db = null; S.uid = null; S.phase = 'connecting'; S.netErr = false;
+  stopPolling();
+  for (const m of Object.values(DOCS)) m.clear();
+  SEQ.clear(); SKIP.clear(); lastSeq = 0; derive(); S.team = new Map();
+  showGate('login', msg);
+}
+async function checkSession() {
+  showGate('loading');
+  try {
+    const r = await api('me');
+    S.storage = r.storage || '';
+    if (r.setup) showGate('setup');
+    else if (!r.user) showGate('login');
+    else signedIn(r.user);
+  } catch (e) { showGate('error', e.message); }
+}
+async function signOut() {
+  closeMenus();
+  try { await api('logout', { method: 'POST' }); } catch (e) { /* sign out on this device anyway */ }
+  S.me = null;
+  signedOut('You’re signed out.');
+}
+function saveFile(name, data, type) {
+  const url = URL.createObjectURL(new Blob([data], { type }));
+  const a = document.createElement('a');
+  a.href = url; a.download = name; a.rel = 'noopener';
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 2000);
+  return { status: 'saved' };
+}
+async function boot() {
+  S.day = today();
+  loadPrefs(); hydrateStatic(); bind(); bindAccount();
+  $('#gate-form').addEventListener('submit', gateSubmit);
+  const h = location.hash.slice(1);
+  go(VIEWS.includes(h) ? h : VIEWS.includes(S.lastView) ? S.lastView : 'today', false);
+  await checkSession();
+}
+
+/* ======================= shared fragments ======================= */
+const loadingHTML = '<p class="loading">Loading…</p>';
+function emptyHTML(title, text, buttons = '') {
+  return `<div class="empty"><h3>${esc(title)}</h3>${text ? `<p>${text}</p>` : ''}${buttons ? `<div class="row-btns w">${buttons}</div>` : ''}</div>`;
+}
+const newBtn = (kind, label, primary) =>
+  `<button type="button" class="btn btn-sm${primary ? ' btn-primary' : ''}" data-new="${kind}">${ic('plus', 'i-sm')}${esc(label)}</button>`;
+function dueCls(due) { const t = today(); return !due ? '' : due < t ? 'over' : due === t ? 'today' : ''; }
+
+function fuItem(x, skip = {}) {
+  const chips = aboutChips(x, skip);
+  const side = x.done
+    ? `<span class="due">${x.doneAt ? 'Done ' + esc(fmtDay(isoDay(x.doneAt))) : 'Done'}</span>`
+    : `<span class="due ${dueCls(x.due)}">${esc(relDue(x.due))}</span>` +
+      `<button type="button" class="icon-btn sm snz w" data-act="snooze" data-id="${esc(x.id)}" title="Push one day" aria-label="Push one day">${ic('snooze', 'i-sm')}</button>`;
+  return `<li class="fu${x.done ? ' done' : ''}">
+    <button type="button" class="tick w" data-act="toggle-task" data-id="${esc(x.id)}" aria-pressed="${x.done ? 'true' : 'false'}" aria-label="${x.done ? 'Mark as not done' : 'Mark as done'}: ${esc(x.title)}">${ic('check')}</button>
+    <button type="button" class="fu-title" data-act="edit-task" data-id="${esc(x.id)}"><bdi>${esc(x.title)}</bdi></button>
+    <div class="fu-side">${side}</div>
+    ${chips ? `<div class="fu-meta">${chips}</div>` : ''}
+  </li>`;
+}
+function fuGroups(tasks, opts = {}) {
+  const t = today(), wk = addDays(t, 7);
+  const groups = [
+    { key: 'over', label: 'Overdue', items: tasks.filter(x => x.due && x.due < t) },
+    { key: 'today', label: 'Today', items: tasks.filter(x => x.due === t) },
+    { key: 'week', label: 'Next 7 days', items: tasks.filter(x => x.due && x.due > t && x.due <= wk) },
+  ];
+  if (opts.all) {
+    groups.push({ key: 'later', label: 'Later', items: tasks.filter(x => x.due && x.due > wk) });
+    groups.push({ key: 'nodate', label: 'No date', items: tasks.filter(x => !x.due) });
+  }
+  return groups.filter(g => g.items.length).map(g =>
+    `<div class="grp ${g.key}"><span class="eyebrow">${g.label}</span><span class="n">${g.items.length}</span></div>
+     <ul class="fu-list">${g.items.sort(byDue).map(x => fuItem(x)).join('')}</ul>`).join('');
+}
+function actItem(a, skip = {}) {
+  const k = KIND[a.kind] || KIND.note;
+  return `<li><span class="kico" title="${esc(k.label)}">${ic(k.icon)}</span>
+    <div class="a-main">
+      <button type="button" class="a-edit" data-act="edit-act" data-id="${esc(a.id)}"><span class="a-sum"><bdi>${esc(a.summary || k.label)}</bdi></span></button>
+      <div class="a-meta"><span>${esc(k.label)} · ${esc(fmtWhen(a.at))}${authorName(a.by) ? ' · ' + esc(authorName(a.by)) : ''}</span>${aboutChips(a, skip)}</div>
+    </div></li>`;
+}
+function lastCell(last, created) {
+  if (!last) return `<span class="cell c-last never">${created && daysSince(created) >= QUIET_DAYS ? 'No contact' : 'None yet'}</span>`;
+  return `<span class="cell c-last${daysSince(last) >= QUIET_DAYS ? ' late' : ''}">${esc(ago(last))}</span>`;
+}
+
+/* ======================= Today ======================= */
+function renderToday() {
+  $('#today-date').textContent = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  const t = today(), open = [...S.tasks.values()];
+  const over = open.filter(x => x.due && x.due < t).length, due = open.filter(x => x.due === t).length;
+  const openDeals = [...S.deals.values()].filter(d => OPEN.includes(d.stage));
+  const lede = $('#today-lede');
+  if (!ready('tasks') || !ready('deals')) lede.textContent = 'Loading your follow-ups and deals…';
+  else if (!open.length && !S.deals.size && !S.people.size && !S.companies.size)
+    lede.textContent = 'Start with a client company and the people you deal with there, then add the quotations you’re working on.';
+  else lede.innerHTML = [
+    over ? `<span class="bad"><b>${over}</b> overdue</span>` : '',
+    `<b>${due}</b> due today`,
+    `<b>${openDeals.length}</b> open ${openDeals.length === 1 ? 'deal' : 'deals'}${openDeals.length ? ' worth ' + esc(fmtSums(sums(openDeals))) : ''}`,
+  ].filter(Boolean).join(' · ');
+
+  // follow-ups due soon
+  const fu = $('#today-fu');
+  if (!ready('tasks')) fu.innerHTML = loadingHTML;
+  else {
+    const html = fuGroups(open);
+    const later = open.filter(x => !x.due || x.due > addDays(t, 7)).length;
+    fu.innerHTML = html
+      ? html + (later ? `<p class="more-row">${plural(later, 'more follow-up')} later or without a date. <a class="link" href="#followups" data-go="followups">See all</a></p>` : '')
+      : emptyHTML(open.length ? 'Nothing due this week' : 'No follow-ups yet',
+          open.length ? `${plural(open.length, 'follow-up')} scheduled further out. <a class="link" href="#followups" data-go="followups">See all</a>`
+                      : 'Type one above, or log a call and schedule the next step in the same form.');
+  }
+
+  // pipeline
+  const pe_ = $('#today-pipe');
+  if (!ready('deals')) pe_.innerHTML = loadingHTML;
+  else if (!S.deals.size) pe_.innerHTML = emptyHTML('No deals yet', 'Add the inquiries and quotations you’re working on to see them by stage.', newBtn('deal', 'New deal', true));
+  else {
+    const ms = monthStartISO();
+    const won = [...S.deals.values()].filter(d => d.stage === 'won' && (d.closedAt || '') >= ms);
+    const month = new Date().toLocaleDateString('en-GB', { month: 'long' });
+    pe_.innerHTML = `<div class="kpis">
+        <div class="kpi"><span class="eyebrow">Open</span><span class="v">${esc(fmtSums(sums(openDeals)))}</span><span class="s">${plural(openDeals.length, 'deal')}</span></div>
+        <div class="kpi"><span class="eyebrow">Won in ${esc(month)}</span><span class="v">${esc(fmtSums(sums(won)))}</span><span class="s">${plural(won.length, 'deal')}</span></div>
+      </div>
+      <div class="pipe" role="list" aria-label="Open deals by stage">${OPEN.map(id => {
+        const ds = openDeals.filter(d => d.stage === id), val = ds.length ? fmtSums(sums(ds)) : '—';
+        return `<a class="seg${ds.length ? '' : ' zero'}" role="listitem" href="#pipeline" data-go="pipeline" style="--c: var(${STAGE_VAR[id]})" aria-label="${esc(STAGE[id].label)}: ${plural(ds.length, 'deal')}, ${esc(val)}">
+          <span class="tube"></span><span class="lbl"><span class="eyebrow">${esc(STAGE[id].label)}</span><span class="c">${ds.length}</span><span class="m">${esc(val)}</span></span></a>`;
+      }).join('')}</div>`;
+  }
+
+  // going quiet
+  const qe = $('#today-quiet');
+  if (!ready('companies') || !ready('acts')) qe.innerHTML = loadingHTML;
+  else {
+    const list = quietList();
+    qe.innerHTML = list.length
+      ? `<ul class="qlist">${list.slice(0, 6).map(r => {
+          const name = r.rec.name, sub = r.last ? `Last contact ${r.days} days ago` : `No contact logged in ${r.days} days`;
+          return `<li><button type="button" class="chip who-btn" data-open="${r.kind}" data-id="${esc(r.rec.id)}" style="display:grid;gap:1px">
+              <bdi style="font-weight:600;color:var(--ink);font-size:14px">${esc(name)}</bdi><span class="s">${esc(sub)}</span></button>
+            <button type="button" class="btn btn-sm w" data-act="log-for" data-about="${r.kind}:${esc(r.rec.id)}">Log contact</button></li>`;
+        }).join('')}</ul>`
+      : `<p class="empty">${S.companies.size
+          ? 'Every active account has been contacted in the last 30 days.'
+          : 'Companies marked Active or In talks appear here when they haven’t heard from you in a month.'}</p>`;
+  }
+
+  // recent activity
+  const ae = $('#today-acts');
+  if (!ready('acts')) ae.innerHTML = loadingHTML;
+  else {
+    const now = nowISO();
+    const acts = allActs().filter(a => (a.at || '') <= now).sort(byAtDesc).slice(0, 6);
+    ae.innerHTML = acts.length ? `<ul class="alist">${acts.map(a => actItem(a)).join('')}</ul>`
+      : emptyHTML('Nothing logged yet', 'Calls, WhatsApp messages, meetings and site visits you log appear here.',
+          `<button type="button" class="btn btn-sm" data-new="activity">${ic('phone', 'i-sm')}Log activity</button>`);
+  }
+}
+function quietList() {
+  const res = [], seen = new Set();
+  const consider = (kind, rec, last) => {
+    const base = last || rec.createdAt;
+    const days = daysSince(base);
+    if (days !== null && days >= QUIET_DAYS) { res.push({ kind, rec, last, days }); seen.add(rec.id); }
+  };
+  for (const c of S.companies.values()) if (c.status === 'Active' || c.status === 'In talks') consider('company', c, S.lc.c.get(c.id));
+  for (const d of S.deals.values()) {
+    if (!OPEN.includes(d.stage)) continue;
+    const p = pe(d.personId);
+    if (p && !seen.has(p.id) && !(p.companyId && seen.has(p.companyId))) consider('person', p, S.lc.p.get(p.id));
+  }
+  return res.sort((a, b) => b.days - a.days);
+}
+
+/* ======================= Pipeline ======================= */
+function renderPipeline() {
+  if (S.dragId) { S.boardDirty = true; return; }
+  const deals = [...S.deals.values()];
+  const open = deals.filter(d => OPEN.includes(d.stage));
+  $('#pipe-lede').innerHTML = !ready('deals') ? 'Loading…'
+    : open.length ? `<b>${open.length}</b> open ${open.length === 1 ? 'deal' : 'deals'} worth <b>${esc(fmtSums(sums(open)))}</b>. Drag a card to move it, or open it to change the stage.`
+    : 'No open deals. Add an inquiry when a request comes in.';
+  $$('#deal-type button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.type === S.ui.dealType)));
+  $('#closed-range').value = S.ui.closed;
+  const board = $('#board');
+  if (!ready('deals')) { board.innerHTML = `<div class="panel">${loadingHTML}</div>`; return; }
+  const cutoff = S.ui.closed === 'all' ? '' : new Date(Date.now() - 90 * 864e5).toISOString();
+  const shown = deals.filter(d => S.ui.dealType === 'all' || (d.type || 'Other') === S.ui.dealType);
+  board.innerHTML = STAGES.map(st => {
+    let ds = shown.filter(d => (d.stage || 'inquiry') === st.id);
+    const isOpen = OPEN.includes(st.id);
+    let hidden = 0;
+    if (isOpen) ds.sort((a, b) => (a.expectedClose || '9999').localeCompare(b.expectedClose || '9999') || num(b.value) - num(a.value));
+    else {
+      ds.sort((a, b) => String(b.closedAt || '').localeCompare(String(a.closedAt || '')));
+      if (cutoff) { const all = ds.length; ds = ds.filter(d => (d.closedAt || d.updatedAt || '') >= cutoff); hidden = all - ds.length; }
+    }
+    return `<section class="col" data-stage="${st.id}" style="--c: var(${STAGE_VAR[st.id]})" aria-label="${esc(st.label)}">
+      <header class="col-h"><div class="t"><h3>${esc(st.label)}</h3><span class="n">${ds.length}</span></div>
+        <span class="m">${ds.length ? esc(fmtSums(sums(ds))) : '&nbsp;'}</span><span class="hint">${esc(st.hint)}</span></header>
+      <div class="cards">${ds.map(dealCard).join('')}</div>
+      ${hidden ? `<p class="more-row" style="border:0;padding:0 12px 10px">${plural(hidden, 'older deal')} hidden. <button type="button" class="link" data-act="closed-all">Show all</button></p>` : ''}
+      ${isOpen ? `<button type="button" class="col-add w" data-new="deal" data-stage="${st.id}">+ Add to ${esc(st.label)}</button>` : ''}
+    </section>`;
+  }).join('');
+}
+function dealCard(d) {
+  const c = co(d.companyId), t = today(), isOpen = OPEN.includes(d.stage);
+  const spec = specLine(d), nt = isOpen ? nextTaskFor('dealId', d.id) : null;
+  const late = isOpen && d.expectedClose && d.expectedClose < t;
+  const when = isOpen
+    ? (d.expectedClose ? `<span class="cl${late ? ' late' : ''}" title="${late ? 'Expected close date has passed' : 'Expected close'}">Close ${esc(fmtDay(d.expectedClose))}</span>` : '')
+    : (d.closedAt ? `<span class="cl">${esc(fmtDay(isoDay(d.closedAt)))}</span>` : '');
+  return `<article class="card" draggable="${canEdit() ? 'true' : 'false'}" data-open="deal" data-id="${esc(d.id)}" tabindex="0" role="button" aria-label="${esc(d.title)}${c ? ', ' + esc(c.name) : ''}">
+    <span class="card-t"><bdi>${esc(d.title)}</bdi></span>
+    ${c ? `<span class="card-co"><bdi>${esc(c.name)}</bdi></span>` : ''}
+    ${spec ? `<span class="spec">${esc(spec)}</span>` : ''}
+    <span class="card-f"><span class="money">${d.value ? esc(money(d.value, d.currency, true)) : '<span class="none">No value yet</span>'}</span>${when}</span>
+    ${nt ? `<span class="nx">${esc(relDue(nt.due))}: <bdi>${esc(nt.title)}</bdi></span>` : ''}
+  </article>`;
+}
+
+/* ======================= People ======================= */
+function renderPeople() {
+  const el = $('#people-list');
+  const total = S.people.size;
+  if (!ready('people')) { el.innerHTML = `<div class="list">${loadingHTML}</div>`; $('#people-lede').textContent = ''; return; }
+  let rows = [...S.people.values()];
+  if (S.ui.peopleType !== 'all') rows = rows.filter(p => ((co(p.companyId) || {}).type || '') === S.ui.peopleType);
+  const q = S.ui.peopleQ.trim();
+  if (q) rows = rows.filter(p => personMatches(p, q));
+  const lc = S.lc.p, sort = S.ui.peopleSort;
+  rows.sort(sort === 'recent' ? (a, b) => String(lc.get(b.id) || '').localeCompare(String(lc.get(a.id) || '')) || byName(a, b)
+    : sort === 'stale' ? (a, b) => String(lc.get(a.id) || '').localeCompare(String(lc.get(b.id) || '')) || byName(a, b)
+    : sort === 'added' ? (a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || ''))
+    : byName);
+  $('#people-lede').textContent = total ? (rows.length === total ? plural(total, 'person', 'people') : `${rows.length} of ${plural(total, 'person', 'people')}`) : '';
+  if (!total) {
+    el.innerHTML = `<div class="list">${emptyHTML('No people yet', 'Add the people you deal with: buyers, site engineers, consultants who specify pumps, and your contacts at suppliers.', newBtn('person', 'New person', true) + newBtn('company', 'New company'))}</div>`;
+    return;
+  }
+  if (!rows.length) { el.innerHTML = `<div class="list">${emptyHTML('No one matches', q ? `Nothing found for “${esc(q)}”.` : 'Try another company type.')}</div>`; return; }
+  const cap = 400;
+  el.innerHTML = `<div class="list" role="list">
+    <div class="lrow l-people lhead" aria-hidden="true"><span>Name</span><span class="c-co">Company</span><span class="c-phone">Mobile</span><span>Last contact</span><span></span></div>
+    ${rows.slice(0, cap).map(personRow).join('')}
+    ${rows.length > cap ? `<p class="more-row">Showing the first ${cap}. Filter to narrow the list.</p>` : ''}</div>`;
+}
+function personRow(p) {
+  const c = co(p.companyId), wa = waNumber(p.phone);
+  const sub2 = [c && c.name, p.role].filter(Boolean).join(' · ');
+  return `<div class="lrow l-people" role="listitem" data-open="person" data-id="${esc(p.id)}" tabindex="0">
+    <div class="who"><span class="av" aria-hidden="true">${esc(initials(p.name))}</span>
+      <span class="tx"><bdi class="t">${esc(p.name)}</bdi>${p.role ? `<span class="s d-only"><bdi>${esc(p.role)}</bdi></span>` : ''}${sub2 ? `<span class="s m-only"><bdi>${esc(sub2)}</bdi></span>` : ''}</span></div>
+    <span class="cell c-co">${c ? '<bdi>' + esc(c.name) + '</bdi>' : '<span class="dim">—</span>'}</span>
+    <span class="cell mono c-phone" dir="ltr">${p.phone ? esc(p.phone) : '<span class="dim">—</span>'}</span>
+    ${lastCell(S.lc.p.get(p.id), p.createdAt)}
+    <span class="acts">${wa ? `<a class="icon-btn sm" href="https://wa.me/${wa}" target="_blank" rel="noopener" title="WhatsApp" aria-label="WhatsApp ${esc(p.name)}">${ic('chat', 'i-sm')}</a>` : ''}${p.phone ? `<button type="button" class="icon-btn sm" data-act="copy" data-text="${esc(p.phone)}" title="Copy number" aria-label="Copy ${esc(p.name)}’s number">${ic('copy', 'i-sm')}</button>` : ''}</span>
+  </div>`;
+}
+
+/* ======================= Companies ======================= */
+function renderCompanies() {
+  const el = $('#co-list');
+  const total = S.companies.size;
+  if (!ready('companies')) { el.innerHTML = `<div class="list">${loadingHTML}</div>`; $('#co-lede').textContent = ''; return; }
+  const openBy = new Map();
+  for (const d of S.deals.values()) if (OPEN.includes(d.stage) && d.companyId) { if (!openBy.has(d.companyId)) openBy.set(d.companyId, []); openBy.get(d.companyId).push(d); }
+  let rows = [...S.companies.values()];
+  if (S.ui.coType !== 'all') rows = rows.filter(c => (c.type || '') === S.ui.coType);
+  if (S.ui.coStatus !== 'all') rows = rows.filter(c => (c.status || '') === S.ui.coStatus);
+  const q = S.ui.coQ.trim();
+  if (q) rows = rows.filter(c => companyMatches(c, q));
+  const lc = S.lc.c, sort = S.ui.coSort;
+  const openEGP = c => (sums(openBy.get(c.id) || []).EGP || 0);
+  rows.sort(sort === 'recent' ? (a, b) => String(lc.get(b.id) || '').localeCompare(String(lc.get(a.id) || '')) || byName(a, b)
+    : sort === 'stale' ? (a, b) => String(lc.get(a.id) || '').localeCompare(String(lc.get(b.id) || '')) || byName(a, b)
+    : sort === 'open' ? (a, b) => openEGP(b) - openEGP(a) || (openBy.get(b.id) || []).length - (openBy.get(a.id) || []).length || byName(a, b)
+    : byName);
+  $('#co-lede').textContent = total ? (rows.length === total ? plural(total, 'company', 'companies') : `${rows.length} of ${plural(total, 'company', 'companies')}`) : '';
+  if (!total) {
+    el.innerHTML = `<div class="list">${emptyHTML('No companies yet', 'Add clients (farms, factories, treatment plants), contractors, consultants and the suppliers you buy from.', newBtn('company', 'New company', true))}</div>`;
+    return;
+  }
+  if (!rows.length) { el.innerHTML = `<div class="list">${emptyHTML('No companies match', q ? `Nothing found for “${esc(q)}”.` : 'Try other filters.')}</div>`; return; }
+  const ppl = new Map();
+  for (const p of S.people.values()) if (p.companyId) ppl.set(p.companyId, (ppl.get(p.companyId) || 0) + 1);
+  el.innerHTML = `<div class="list" role="list">
+    <div class="lrow l-co lhead" aria-hidden="true"><span>Company</span><span class="c-type">Type</span><span class="c-sector">Sector</span><span class="c-status">Status</span><span class="c-open">Open deals</span><span>Last contact</span></div>
+    ${rows.map(c => {
+      const od = openBy.get(c.id) || [];
+      const m = [c.type, c.status, c.city].filter(Boolean).join(' · ');
+      return `<div class="lrow l-co" role="listitem" data-open="company" data-id="${esc(c.id)}" tabindex="0">
+        <div class="who"><span class="av co" aria-hidden="true">${esc(initials(c.name))}</span>
+          <span class="tx"><bdi class="t">${esc(c.name)}</bdi><span class="s d-only"><bdi>${esc([c.city, ppl.get(c.id) ? plural(ppl.get(c.id), 'person', 'people') : ''].filter(Boolean).join(' · '))}</bdi></span>${m ? `<span class="s m-only"><bdi>${esc(m)}</bdi></span>` : ''}</span></div>
+        <span class="cell c-type">${esc(c.type || '—')}</span>
+        <span class="cell c-sector">${esc(c.sector || '—')}</span>
+        <span class="cell c-status">${c.status ? `<span class="pill ${STATUS_CLS[c.status] || ''}">${esc(c.status)}</span>` : '—'}</span>
+        <span class="cell mono c-open">${od.length ? esc(fmtSums(sums(od))) + ` <span class="dim">(${od.length})</span>` : '<span class="dim">—</span>'}</span>
+        ${lastCell(S.lc.c.get(c.id), c.createdAt)}
+      </div>`;
+    }).join('')}</div>`;
+}
+
+/* ======================= Follow-ups ======================= */
+function renderFollowups() {
+  const open = [...S.tasks.values()], t = today();
+  const over = open.filter(x => x.due && x.due < t).length;
+  $('#fu-lede').innerHTML = !ready('tasks') ? 'Loading…'
+    : open.length ? `<b>${open.length}</b> open${over ? ` · <span class="bad"><b>${over}</b> overdue</span>` : ''}. Tick one off when it’s done; the arrow pushes it a day.`
+    : 'Nothing open.';
+  const el = $('#fu-all');
+  if (!ready('tasks')) el.innerHTML = loadingHTML;
+  else el.innerHTML = fuGroups(open, { all: true }) || emptyHTML('No open follow-ups', 'Add one above, or schedule one when you log a call.');
+  const btn = $('#show-done'), box = $('#fu-done');
+  btn.setAttribute('aria-expanded', String(S.ui.showDone));
+  btn.textContent = S.ui.showDone ? 'Hide completed' : 'Show completed';
+  box.hidden = !S.ui.showDone;
+  if (S.ui.showDone) {
+    const done = [...S.doneTasks.values()].sort((a, b) => String(b.doneAt || '').localeCompare(String(a.doneAt || '')));
+    box.innerHTML = done.length
+      ? `<div class="grp"><span class="eyebrow">Completed</span><span class="n">${done.length}</span></div><ul class="fu-list">${done.map(x => fuItem(x)).join('')}</ul>`
+      : `<p class="empty">Completed follow-ups appear here.</p>`;
+  }
+}
+
+/* ======================= record sheet ======================= */
+function openSheet(kind, id) {
+  const dlg = $('#sheet');
+  const same = S.sheet && S.sheet.kind === kind && S.sheet.id === id;
+  S.sheet = { kind, id };
+  S.armed = null;
+  renderSheet(!same);
+  if (!dlg.open) { try { dlg.showModal(); } catch (e) { dlg.setAttribute('open', ''); } }
+  const close = $('#sheet .sh-close');
+  if (close && !same) close.focus({ preventScroll: true });
+  fetchHistory(kind, id);
+}
+function closeSheet() { const dlg = $('#sheet'); if (dlg.open) dlg.close(); S.sheet = null; S.armed = null; }
+async function fetchHistory(kind, id) {
+  // the live feed keeps the latest 1,000 entries; older history for this record is fetched on open
+  if (!S.db || !S.db.queries) return;   // the website keeps every activity in sync
+  const field = kind === 'person' ? 'personId' : kind === 'company' ? 'companyId' : 'dealId';
+  try {
+    const snap = await S.db.collection(COL.acts).where(field, '==', id).limit(500).get();
+    let added = false;
+    for (const d of snap.docs) {
+      if (S.acts.has(d.id) || S.extraActs.has(d.id)) continue;
+      const v = d.data();
+      if (v) { S.extraActs.set(d.id, Object.assign({ id: d.id }, v)); added = true; }
+    }
+    if (added) scheduleRender();
+  } catch (e) { /* older history is optional */ }
+}
+function renderSheet(fresh) {
+  if (!S.sheet) return;
+  const { kind, id } = S.sheet;
+  const rec = kind === 'person' ? pe(id) : kind === 'company' ? co(id) : de(id);
+  const root = $('#sheet-in');
+  const body = $('.sh-body', root), st = body && !fresh ? body.scrollTop : 0;
+  keepFocus(root, () => {
+    if (!rec) {
+      const waiting = S.sheet.pending || !ready(kind === 'person' ? 'people' : kind === 'company' ? 'companies' : 'deals');
+      root.innerHTML = `<header class="sh-h"><div class="tx"><h2 id="sheet-title">${waiting ? 'Saving…' : 'Record not found'}</h2>
+        <span class="s">${waiting ? 'This takes a moment.' : 'It may have been deleted.'}</span></div>
+        <button type="button" class="icon-btn sh-close" data-act="close-sheet" aria-label="Close">${ic('x')}</button></header>`;
+      return;
+    }
+    root.innerHTML = kind === 'person' ? personSheet(rec) : kind === 'company' ? companySheet(rec) : dealSheet(rec);
+  });
+  const nb = $('.sh-body', root);
+  if (nb) nb.scrollTop = st;
+}
+const sheetHead = (avatar, eyebrow, title, sub) => `<header class="sh-h">${avatar}
+  <div class="tx"><span class="eyebrow">${eyebrow}</span><h2 id="sheet-title"><bdi>${esc(title)}</bdi></h2>${sub ? `<span class="s">${sub}</span>` : ''}</div>
+  <button type="button" class="icon-btn sh-close" data-act="close-sheet" aria-label="Close">${ic('x')}</button></header>`;
+const barBtn = (attrs, icon, label, primary) =>
+  `<button type="button" class="btn btn-sm${primary ? ' btn-primary' : ''}" ${attrs}>${ic(icon, 'i-sm')}${esc(label)}</button>`;
+function phoneLine(ph) {
+  const wa = waNumber(ph);
+  return `<span class="ph-line"><span class="mono" dir="ltr">${esc(ph)}</span>
+    <button type="button" class="btn btn-ghost btn-sm" data-act="copy" data-text="${esc(ph)}">${ic('copy', 'i-sm')}Copy</button>
+    ${wa ? `<a class="btn btn-ghost btn-sm" href="https://wa.me/${wa}" target="_blank" rel="noopener">${ic('chat', 'i-sm')}WhatsApp</a>` : ''}</span>`;
+}
+function emailLine(em) {
+  return `<span class="ph-line"><span class="mono" dir="ltr">${esc(em)}</span>
+    <button type="button" class="btn btn-ghost btn-sm" data-act="copy" data-text="${esc(em)}">${ic('copy', 'i-sm')}Copy</button></span>`;
+}
+function webLine(w) {
+  const url = /^https?:\/\//i.test(w) ? w : 'https://' + w;
+  return /^https?:\/\/[^\s/$.?#].[^\s]*$/i.test(url)
+    ? `<a href="${esc(url)}" target="_blank" rel="noopener" dir="ltr">${esc(w.replace(/^https?:\/\//i, ''))}</a>` : esc(w);
+}
+function delFoot(kind, id, created, label) {
+  const armed = S.armed === kind + ':' + id;
+  return `<div class="sh-foot"><span>${created ? 'Added ' + esc(fmtDay(isoDay(created))) : ''}</span>
+    <button type="button" class="btn btn-sm btn-danger w${armed ? ' armed' : ''}" data-act="delete" data-kind="${kind}" data-id="${esc(id)}">${ic('trash', 'i-sm')}${armed ? 'Click again to delete' : esc(label)}</button></div>`;
+}
+const secFollowups = (tasks, skip) => `<section class="sec"><h3 class="eyebrow">Follow-ups<span class="n">${tasks.length || ''}</span></h3>
+  ${tasks.length ? `<ul class="mini">${tasks.map(x => fuItem(x, skip)).join('')}</ul>` : '<p class="none">Nothing scheduled.</p>'}</section>`;
+const secActivity = (acts, skip) => `<section class="sec"><h3 class="eyebrow">Activity<span class="n">${acts.length || ''}</span></h3>
+  ${acts.length ? `<ul class="tl">${acts.map(a => actItem(a, skip)).join('')}</ul>` : '<p class="none">No calls, messages or visits logged yet.</p>'}</section>`;
+function miniDeal(d) {
+  const st = STAGE[d.stage] || STAGE.inquiry;
+  return `<li><button type="button" class="mi" data-open="deal" data-id="${esc(d.id)}">
+    <span class="tx"><bdi class="t">${esc(d.title)}</bdi><span class="s">${esc(st.label)}${specLine(d) ? ' · ' + esc(specLine(d)) : ''}</span></span>
+    <span class="mono" style="font-size:13px">${d.value ? esc(money(d.value, d.currency, true)) : ''}</span></button></li>`;
+}
+
+function personSheet(p) {
+  const c = co(p.companyId), id = esc(p.id);
+  const deals = [...S.deals.values()].filter(d => d.personId === p.id);
+  const last = S.lc.p.get(p.id);
+  const sub = [p.role ? `<bdi>${esc(p.role)}</bdi>` : '', c ? 'at ' + chip('company', c.id, 'building', c.name) : ''].filter(Boolean).join(' ');
+  const tags = (p.tags || []).map(t => `<span class="tag"><bdi>${esc(t)}</bdi></span>`).join(' ');
+  return sheetHead(`<span class="av lg" aria-hidden="true">${esc(initials(p.name))}</span>`, 'Person' + (c && c.type ? ' · ' + esc(c.type) : ''), p.name, sub) +
+  `<div class="sh-bar w">
+    ${barBtn(`data-act="log-for" data-about="person:${id}"`, 'phone', 'Log activity', true)}
+    ${barBtn(`data-act="task-for" data-about="person:${id}"`, 'check-sq', 'Follow-up')}
+    ${barBtn(`data-act="deal-for" data-person="${id}" data-company="${esc(p.companyId || '')}"`, 'deal', 'New deal')}
+    ${barBtn(`data-act="edit" data-kind="person" data-id="${id}"`, 'edit', 'Edit')}
+  </div>
+  <div class="sh-body">
+    <section class="sec"><h3 class="eyebrow">Contact</h3>
+      <dl class="kv">
+        ${p.phone ? `<dt>Mobile</dt><dd>${phoneLine(p.phone)}</dd>` : ''}
+        ${p.phone2 ? `<dt>Other phone</dt><dd>${phoneLine(p.phone2)}</dd>` : ''}
+        ${p.email ? `<dt>Email</dt><dd>${emailLine(p.email)}</dd>` : ''}
+        <dt>Last contact</dt><dd>${last ? `${esc(ago(last))} <span class="none">· ${esc(fmtWhen(last))}</span>` : '<span class="none">None logged yet</span>'}</dd>
+        ${tags ? `<dt>Tags</dt><dd>${tags}</dd>` : ''}
+      </dl>
+    </section>
+    ${p.notes ? `<section class="sec"><h3 class="eyebrow">Notes</h3><div class="notes" dir="auto">${esc(p.notes)}</div></section>` : ''}
+    ${secFollowups(tasksFor('personId', p.id), { person: true })}
+    ${deals.length ? `<section class="sec"><h3 class="eyebrow">Deals<span class="n">${deals.length}</span></h3><ul class="mini">${deals.map(miniDeal).join('')}</ul></section>` : ''}
+    ${secActivity(actsFor('personId', p.id), { person: true })}
+    ${delFoot('person', p.id, p.createdAt, 'Delete person')}
+  </div>`;
+}
+
+function companySheet(c) {
+  const id = esc(c.id);
+  const people = [...S.people.values()].filter(p => p.companyId === c.id).sort(byName);
+  const pids = new Set(people.map(p => p.id));
+  const deals = [...S.deals.values()].filter(d => d.companyId === c.id)
+    .sort((a, b) => (OPEN.includes(b.stage) - OPEN.includes(a.stage)) || String(b.updatedAt || '').localeCompare(String(a.updatedAt || '')));
+  const openD = deals.filter(d => OPEN.includes(d.stage)), wonD = deals.filter(d => d.stage === 'won');
+  const acts = allActs().filter(a => a.companyId === c.id || (a.personId && pids.has(a.personId))).sort(byAtDesc);
+  const tasks = [...S.tasks.values()].filter(x => x.companyId === c.id || (x.personId && pids.has(x.personId))).sort(byDue);
+  const last = S.lc.c.get(c.id);
+  const sub = [c.status ? `<span class="pill ${STATUS_CLS[c.status] || ''}">${esc(c.status)}</span>` : '', c.city ? `<bdi>${esc(c.city)}</bdi>` : ''].filter(Boolean).join(' · ');
+  return sheetHead(`<span class="av co lg" aria-hidden="true">${esc(initials(c.name))}</span>`, [c.type || 'Company', c.sector].filter(Boolean).map(esc).join(' · '), c.name, sub) +
+  `<div class="sh-bar w">
+    ${barBtn(`data-act="log-for" data-about="company:${id}"`, 'phone', 'Log activity', true)}
+    ${barBtn(`data-act="task-for" data-about="company:${id}"`, 'check-sq', 'Follow-up')}
+    ${barBtn(`data-act="deal-for" data-company="${id}"`, 'deal', 'New deal')}
+    ${barBtn(`data-act="person-for" data-company="${id}"`, 'user', 'Add person')}
+    ${barBtn(`data-act="edit" data-kind="company" data-id="${id}"`, 'edit', 'Edit')}
+  </div>
+  <div class="sh-body">
+    <section class="sec"><h3 class="eyebrow">Details</h3>
+      <dl class="kv">
+        ${c.phone ? `<dt>Phone</dt><dd>${phoneLine(c.phone)}</dd>` : ''}
+        ${c.email ? `<dt>Email</dt><dd>${emailLine(c.email)}</dd>` : ''}
+        ${c.website ? `<dt>Website</dt><dd>${webLine(c.website)}</dd>` : ''}
+        ${c.address ? `<dt>Address</dt><dd dir="auto">${esc(c.address)}</dd>` : ''}
+        <dt>Last contact</dt><dd>${last ? `${esc(ago(last))} <span class="none">· ${esc(fmtWhen(last))}</span>` : '<span class="none">None logged yet</span>'}</dd>
+        ${deals.length ? `<dt>Open deals</dt><dd class="mono">${esc(fmtSums(sums(openD), false))} <span class="none">(${openD.length})</span></dd>
+        <dt>Won to date</dt><dd class="mono">${esc(fmtSums(sums(wonD), false))} <span class="none">(${wonD.length})</span></dd>` : ''}
+      </dl>
+    </section>
+    ${c.notes ? `<section class="sec"><h3 class="eyebrow">Notes</h3><div class="notes" dir="auto">${esc(c.notes)}</div></section>` : ''}
+    <section class="sec"><h3 class="eyebrow">People<span class="n">${people.length || ''}</span></h3>
+      ${people.length ? `<ul class="mini">${people.map(p => `<li><button type="button" class="mi" data-open="person" data-id="${esc(p.id)}">
+          <span class="tx"><bdi class="t">${esc(p.name)}</bdi><span class="s"><bdi>${esc(p.role || '')}</bdi></span></span>
+          <span class="mono" style="font-size:12px;color:var(--ink-3)" dir="ltr">${esc(p.phone || '')}</span></button></li>`).join('')}</ul>`
+        : '<p class="none">No one added yet.</p>'}
+    </section>
+    ${secFollowups(tasks, { company: true })}
+    <section class="sec"><h3 class="eyebrow">Deals<span class="n">${deals.length || ''}</span></h3>
+      ${deals.length ? `<ul class="mini">${deals.map(miniDeal).join('')}</ul>` : '<p class="none">No deals yet.</p>'}</section>
+    ${secActivity(acts, { company: true })}
+    ${delFoot('company', c.id, c.createdAt, 'Delete company')}
+  </div>`;
+}
+
+function dealSheet(d) {
+  const id = esc(d.id), c = co(d.companyId), p = pe(d.personId);
+  const stage = STAGE[d.stage] ? d.stage : 'inquiry';
+  const si = OPEN.indexOf(stage);
+  const sub = [c ? chip('company', c.id, 'building', c.name) : '', p ? chip('person', p.id, 'user', p.name) : ''].filter(Boolean).join(' ');
+  const steps = OPEN.map((s, i) => {
+    const cls = s === stage ? 'cur' : (si > i || stage === 'won') ? 'past' : '';
+    return `<button type="button" class="step ${cls}" data-act="stage" data-id="${id}" data-stage="${s}" style="--c: var(${STAGE_VAR[s]})" aria-pressed="${s === stage}"${canEdit() ? '' : ' disabled'}>
+      <span class="tube"></span><span class="eyebrow">${esc(STAGE[s].label)}</span></button>`;
+  }).join('');
+  const ends = ['won', 'lost'].map(s => `<button type="button" class="end ${s}${stage === s ? ' cur' : ''}" data-act="stage" data-id="${id}" data-stage="${s}" aria-pressed="${stage === s}"${canEdit() ? '' : ' disabled'}>${s === 'won' ? 'Won' : 'Lost'}</button>`).join('');
+  const t = today(), isOpen = OPEN.includes(stage);
+  const q = num(d.flow), h = num(d.head);
+  return sheetHead(`<span class="av co lg" aria-hidden="true">${ic('deal')}</span>`, esc(d.type || 'Deal') + ' deal', d.title, sub) +
+  `<div class="sh-bar w">
+    ${barBtn(`data-act="log-for" data-about="deal:${id}"`, 'phone', 'Log activity', true)}
+    ${barBtn(`data-act="task-for" data-about="deal:${id}"`, 'check-sq', 'Follow-up')}
+    ${barBtn(`data-act="edit" data-kind="deal" data-id="${id}"`, 'edit', 'Edit')}
+  </div>
+  <div class="sh-body">
+    <section class="sec"><h3 class="eyebrow">Stage<span class="none" style="text-transform:none;letter-spacing:0;font:400 12px var(--font-body)">${d.stageChangedAt ? 'since ' + esc(fmtDay(isoDay(d.stageChangedAt))) : ''}</span></h3>
+      <div class="stepper" role="group" aria-label="Move to stage">${steps}${ends}</div>
+    </section>
+    <section class="sec"><h3 class="eyebrow">Details</h3>
+      <dl class="kv">
+        <dt>Value</dt><dd class="mono">${d.value ? esc(money(d.value, d.currency)) : '<span class="none">Not set</span>'}</dd>
+        ${isOpen ? `<dt>Expected close</dt><dd>${d.expectedClose ? `${esc(fmtDay(d.expectedClose, true))}${d.expectedClose < t ? ' <span style="color:var(--bad)">· date passed</span>' : ''}` : '<span class="none">Not set</span>'}</dd>`
+                 : `<dt>Closed</dt><dd>${d.closedAt ? esc(fmtDay(isoDay(d.closedAt), true)) : '—'}</dd>`}
+        ${d.pumpType ? `<dt>Pump type</dt><dd>${esc(d.pumpType)}</dd>` : ''}
+        ${d.brand ? `<dt>Brand</dt><dd>${esc(d.brand)}</dd>` : ''}
+        ${q || h ? `<dt>Duty point</dt><dd class="mono">${q ? 'Q ' + esc(nfq.format(q)) + ' m³/h' : 'Q –'} · ${h ? 'H ' + esc(nfq.format(h)) + ' m' : 'H –'}</dd>` : ''}
+        ${num(d.qty) ? `<dt>Quantity</dt><dd class="mono">${esc(num(d.qty))}</dd>` : ''}
+        ${p ? `<dt>Contact</dt><dd>${chip('person', p.id, 'user', p.name)}${p.phone ? ' ' + phoneLine(p.phone) : ''}</dd>` : ''}
+      </dl>
+    </section>
+    ${d.notes ? `<section class="sec"><h3 class="eyebrow">Notes</h3><div class="notes" dir="auto">${esc(d.notes)}</div></section>` : ''}
+    ${secFollowups(tasksFor('dealId', d.id), { deal: true })}
+    ${secActivity(actsFor('dealId', d.id), { deal: true })}
+    ${delFoot('deal', d.id, d.createdAt, 'Delete deal')}
+  </div>`;
+}
+
+/* keep keyboard focus on the equivalent control when a region re-renders */
+function focusKey(el) {
+  if (!el || el === document.body) return null;
+  if (el.id) return '#' + CSS.escape(el.id);
+  const parts = [];
+  for (const k of ['act', 'open', 'id', 'go', 'new', 'stage', 'about']) if (el.dataset && el.dataset[k]) parts.push(`[data-${k}="${CSS.escape(el.dataset[k])}"]`);
+  return parts.length ? el.tagName.toLowerCase() + parts.join('') : null;
+}
+function keepFocus(root, fn) {
+  const ae = document.activeElement;
+  const key = root && ae && root.contains(ae) ? focusKey(ae) : null;
+  fn();
+  if (key) { const n = root.querySelector(key); if (n) n.focus({ preventScroll: true }); }
+}
+
+/* ======================= form engine ======================= */
+const M = { cfg: null, busy: false, pick: {}, escFlag: false, armed: false };
+const opt = (v, label, sel) => `<option value="${esc(v)}"${sel ? ' selected' : ''}>${esc(label)}</option>`;
+
+function fieldHTML(fd) {
+  const id = 'f-' + fd.name, full = fd.full ? ' full' : '', req = fd.required ? ' <span class="req" aria-hidden="true">*</span>' : '';
+  const lab = `<label for="${id}">${esc(fd.label)}${req}</label>`;
+  const help = fd.help ? `<span class="help">${esc(fd.help)}</span>` : '';
+  const ph = fd.placeholder ? ` placeholder="${esc(fd.placeholder)}"` : '';
+  const dir = fd.dir ? ` dir="${fd.dir}"` : '';
+  switch (fd.type) {
+    case 'textarea':
+      return `<div class="fld${full}">${lab}<textarea id="${id}"${ph}${dir} rows="${fd.rows || 3}"></textarea>${help}</div>`;
+    case 'select':
+      return `<div class="fld${full}">${lab}<select id="${id}">${fd.options.map(o => Array.isArray(o) ? opt(o[0], o[1]) : opt(o, o)).join('')}</select>${help}</div>`;
+    case 'money':
+      return `<div class="fld${full}"><label for="f-value">${esc(fd.label)}</label><div class="pair">
+        <input id="f-value" type="number" min="0" step="any" inputmode="decimal" placeholder="0">
+        <select id="f-currency" aria-label="Currency">${CURRENCIES.map(c => opt(c, c)).join('')}</select></div>${help}</div>`;
+    case 'duty':
+      return `<div class="fld${full}"><span class="lab">${esc(fd.label)}</span><div class="trio">
+        <div class="unit"><input id="f-flow" type="number" min="0" step="any" inputmode="decimal" aria-label="Flow in cubic metres per hour" placeholder="Flow"><span>m³/h</span></div>
+        <div class="unit"><input id="f-head" type="number" min="0" step="any" inputmode="decimal" aria-label="Head in metres" placeholder="Head"><span>m</span></div>
+        <div class="unit"><input id="f-qty" type="number" min="0" step="1" inputmode="numeric" aria-label="Quantity" placeholder="Qty"><span>pcs</span></div>
+      </div>${help}</div>`;
+    case 'kinds':
+      return `<div class="fld${full}"><span class="lab">${esc(fd.label)}</span><div class="kinds" role="radiogroup" aria-label="${esc(fd.label)}">
+        ${KINDS.map(k => `<label><input type="radio" name="f-kind" id="f-kind-${k.id}" value="${k.id}"><span>${ic(k.icon, 'i-sm')}${esc(k.label)}</span></label>`).join('')}</div></div>`;
+    case 'date':
+      return `<div class="fld${full}">${lab}<input id="${id}" type="date">${fd.quick ? `<div class="quick">${fd.quick.map(([l, n]) =>
+        `<button type="button" data-m="quick" data-target="${id}" data-days="${n}">${esc(l)}</button>`).join('')}</div>` : ''}${help}</div>`;
+    case 'datetime':
+      return `<div class="fld${full}">${lab}<input id="${id}" type="datetime-local">${help}</div>`;
+    case 'check':
+      return `<div class="fld${full}"><label class="check" for="${id}"><input id="${id}" type="checkbox"> ${esc(fd.label)}</label>${help}</div>`;
+    case 'group':
+      return `<div class="fld full"><div class="sub-box" id="${id}"${fd.hidden ? ' hidden' : ''}><div class="fgrid">${fd.fields.map(fieldHTML).join('')}</div></div></div>`;
+    case 'picker':
+      return `<div class="fld${full}">${lab}<div class="pick" data-pick="${fd.name}">
+        <div class="pick-sel" id="${id}-sel" hidden></div>
+        <input id="${id}" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="${id}-list"${ph} autocomplete="off" spellcheck="false" dir="auto">
+        <ul class="pick-list" id="${id}-list" role="listbox" hidden></ul></div>${help}</div>`;
+    default:
+      return `<div class="fld${full}">${lab}<input id="${id}" type="${fd.type || 'text'}"${ph}${dir}${fd.list ? ` list="${fd.list}"` : ''}${fd.type === 'tel' ? ' inputmode="tel" dir="ltr"' : ''}${fd.type === 'email' ? ' dir="ltr"' : ''}>${help}</div>`;
+  }
+}
+const flatFields = fields => fields.flatMap(f => f.type === 'group' ? flatFields(f.fields) : [f]);
+
+function openForm(cfg) {
+  const form = $('#mform');
+  M.cfg = cfg; M.pick = {}; M.busy = false; M.armed = false;
+  form.innerHTML = `<div class="m-h"><h2 id="m-title">${esc(cfg.title)}</h2>
+      <button type="button" class="icon-btn" data-m="close" aria-label="Close">${ic('x')}</button></div>
+    <div class="m-b">${cfg.intro || ''}${cfg.fields.length ? `<div class="fgrid">${cfg.fields.map(fieldHTML).join('')}</div>` : ''}</div>
+    <div class="m-f">${cfg.onDelete ? `<button type="button" class="btn btn-sm btn-danger" data-m="delete">${ic('trash', 'i-sm')}<span>Delete</span></button>` : ''}
+      <span class="m-err" id="m-err" role="alert"></span><span class="sp"></span>
+      <button type="button" class="btn btn-ghost" data-m="close">${esc(cfg.cancel || 'Cancel')}</button>
+      <button type="submit" class="btn btn-primary" id="m-submit">${esc(cfg.submit || 'Save')}</button></div>`;
+  const vals = cfg.values || {};
+  for (const fd of flatFields(cfg.fields)) setField(fd, vals[fd.name]);
+  if (cfg.after) cfg.after();
+  const dlg = $('#modal');
+  if (!dlg.open) dlg.showModal();
+  const first = form.querySelector('.m-b input:not([type="radio"]):not([type="checkbox"]):not([hidden]), .m-b textarea');
+  if (first && !cfg.noAutofocus) first.focus({ preventScroll: true });
+  $('.m-b', form).scrollTop = 0;
+}
+function closeModal() { const d = $('#modal'); if (d.open) d.close(); M.cfg = null; }
+function setField(fd, v) {
+  const el = $('#f-' + fd.name);
+  switch (fd.type) {
+    case 'money': $('#f-value').value = v && v.value != null && v.value !== 0 ? v.value : ''; $('#f-currency').value = (v && v.currency) || 'EGP'; break;
+    case 'duty': $('#f-flow').value = (v && num(v.flow)) || ''; $('#f-head').value = (v && num(v.head)) || ''; $('#f-qty').value = (v && num(v.qty)) || ''; break;
+    case 'kinds': { const r = $('#f-kind-' + (v || 'call')); if (r) r.checked = true; break; }
+    case 'check': el.checked = !!v; break;
+    case 'picker': M.pick[fd.name] = { fd, value: '' }; setPick(fd.name, v || '', true); break;
+    case 'select': if (v != null && v !== '') el.value = v; break;
+    default: if (el) el.value = v == null ? '' : v;
+  }
+}
+function getField(fd) {
+  const el = $('#f-' + fd.name);
+  switch (fd.type) {
+    case 'money': return { value: $('#f-value').value === '' ? null : Number($('#f-value').value), currency: $('#f-currency').value };
+    case 'duty': return { flow: num($('#f-flow').value) || null, head: num($('#f-head').value) || null, qty: num($('#f-qty').value) || null };
+    case 'kinds': { const r = $('#mform input[name="f-kind"]:checked'); return r ? r.value : 'call'; }
+    case 'check': return el.checked;
+    case 'picker': return resolvePending(fd.name);
+    default: return el ? el.value : '';
+  }
+}
+
+/* ---------- pickers: type to find a person, company or deal ---------- */
+function pickLabel(val) {
+  const i = String(val).indexOf(':'), k = val.slice(0, i), id = val.slice(i + 1);
+  if (k === 'person') { const p = pe(id); if (!p) return null; const c = co(p.companyId); return { icon: 'user', t: p.name, s: [p.role, c && c.name].filter(Boolean).join(' · ') }; }
+  if (k === 'company') { const c = co(id); if (!c) return null; return { icon: 'building', t: c.name, s: [c.type, c.city].filter(Boolean).join(' · ') }; }
+  if (k === 'deal') { const d = de(id); if (!d) return null; const c = co(d.companyId); return { icon: 'deal', t: d.title, s: [c && c.name, (STAGE[d.stage] || {}).label].filter(Boolean).join(' · ') }; }
+  if (k === 'new-company') return { icon: 'building', t: id, s: 'New company, created when you save' };
+  return null;
+}
+function setPick(name, val, silent) {
+  const st = M.pick[name]; if (!st) return;
+  const lab = val ? pickLabel(val) : null;
+  st.value = lab ? val : '';
+  const sel = $(`#f-${name}-sel`), inp = $(`#f-${name}`), list = $(`#f-${name}-list`);
+  if (lab) {
+    sel.innerHTML = `${ic(lab.icon)}<span class="tx"><bdi class="t">${esc(lab.t)}</bdi>${lab.s ? `<span class="s"><bdi>${esc(lab.s)}</bdi></span>` : ''}</span>
+      <button type="button" class="icon-btn sm" data-m="pick-clear" data-name="${name}" aria-label="Change ${esc(st.fd.label)}">${ic('x', 'i-sm')}</button>`;
+    sel.hidden = false; inp.hidden = true; inp.value = '';
+  } else { sel.hidden = true; inp.hidden = false; }
+  list.hidden = true; inp.setAttribute('aria-expanded', 'false');
+  if (!silent && st.fd.onPick) st.fd.onPick(st.value);
+}
+function pickCandidates(fd, q) {
+  const kinds = fd.kinds, out = [];
+  const ctx = fd.ctx && M.pick[fd.ctx] ? M.pick[fd.ctx].value : '';
+  const ctxCo = ctx.startsWith('company:') ? ctx.slice(8) : '';
+  const toks = tokens(q), phone = isPhoneQuery(q);
+  const lc = S.lc;
+  if (kinds.includes('person')) {
+    let ps = [...S.people.values()].filter(p => !toks.length || personMatches(p, q));
+    ps.sort((a, b) => ((b.companyId === ctxCo) - (a.companyId === ctxCo)) ||
+      (toks.length ? rank(a.name, q) - rank(b.name, q) : String(lc.p.get(b.id) || b.createdAt || '').localeCompare(String(lc.p.get(a.id) || a.createdAt || ''))) || byName(a, b));
+    out.push(...ps.slice(0, toks.length ? 8 : 6).map(p => 'person:' + p.id));
+  }
+  if (kinds.includes('company') && !phone) {
+    let cs = [...S.companies.values()].filter(c => !toks.length || companyMatches(c, q));
+    cs.sort((a, b) => (toks.length ? rank(a.name, q) - rank(b.name, q) : String(lc.c.get(b.id) || b.createdAt || '').localeCompare(String(lc.c.get(a.id) || a.createdAt || ''))) || byName(a, b));
+    out.push(...cs.slice(0, toks.length ? 8 : 6).map(c => 'company:' + c.id));
+  }
+  if (kinds.includes('deal') && !phone) {
+    let ds = [...S.deals.values()].filter(d => (toks.length ? dealMatches(d, q) : OPEN.includes(d.stage)));
+    ds.sort((a, b) => (OPEN.includes(b.stage) - OPEN.includes(a.stage)) || (toks.length ? rank(a.title, q) - rank(b.title, q) : 0) || String(b.updatedAt || '').localeCompare(String(a.updatedAt || '')));
+    out.push(...ds.slice(0, toks.length ? 6 : 4).map(d => 'deal:' + d.id));
+  }
+  if (fd.create === 'company' && q.trim() && ![...S.companies.values()].some(c => norm(c.name) === norm(q))) out.push('new-company:' + q.trim());
+  return out;
+}
+function renderPickList(name) {
+  const st = M.pick[name]; if (!st) return;
+  const inp = $(`#f-${name}`), list = $(`#f-${name}-list`);
+  const q = inp.value;
+  const vals = pickCandidates(st.fd, q);
+  st.items = vals; st.on = vals.length ? 0 : -1;
+  if (!vals.length) {
+    list.innerHTML = `<li class="pk-none" role="presentation">${q.trim() ? `Nothing matches “${esc(q)}”.` : 'Nothing to choose yet.'}</li>`;
+  } else {
+    list.innerHTML = vals.map((v, i) => {
+      const lab = pickLabel(v), create = v.startsWith('new-company:');
+      return `<li role="option" id="f-${name}-o${i}" data-i="${i}" class="${create ? 'create' : ''}${i === st.on ? ' on' : ''}" aria-selected="${i === st.on}">${ic(lab.icon)}
+        <span class="tx"><bdi class="t">${create ? 'Create company “' + esc(lab.t) + '”' : esc(lab.t)}</bdi>${!create && lab.s ? `<span class="s"><bdi>${esc(lab.s)}</bdi></span>` : ''}</span></li>`;
+    }).join('');
+  }
+  list.hidden = false; inp.setAttribute('aria-expanded', 'true');
+  inp.setAttribute('aria-activedescendant', st.on >= 0 ? `f-${name}-o${st.on}` : '');
+}
+function movePick(name, delta) {
+  const st = M.pick[name]; if (!st || !st.items || !st.items.length) return;
+  st.on = (st.on + delta + st.items.length) % st.items.length;
+  $$(`#f-${name}-list li[role="option"]`).forEach((li, i) => { li.classList.toggle('on', i === st.on); li.setAttribute('aria-selected', String(i === st.on)); if (i === st.on) li.scrollIntoView({ block: 'nearest' }); });
+  $(`#f-${name}`).setAttribute('aria-activedescendant', `f-${name}-o${st.on}`);
+}
+function closePick(name) { const l = $(`#f-${name}-list`); if (l) l.hidden = true; const i = $(`#f-${name}`); if (i) i.setAttribute('aria-expanded', 'false'); }
+/* text typed but nothing chosen: use an exact match, or create the company */
+function resolvePending(name) {
+  const st = M.pick[name]; if (!st) return '';
+  if (st.value) return st.value;
+  const q = ($(`#f-${name}`) || {}).value || '';
+  if (!q.trim()) return '';
+  const vals = pickCandidates(st.fd, q).filter(v => !v.startsWith('new-company:'));
+  const exact = vals.find(v => { const l = pickLabel(v); return l && norm(l.t) === norm(q); });
+  if (exact) return exact;
+  if (st.fd.create === 'company') return 'new-company:' + q.trim();
+  if (vals.length === 1) return vals[0];
+  throw { field: name, msg: `Choose ${st.fd.label.toLowerCase()} from the list, or clear the field.` };
+}
+
+/* ======================= the forms ======================= */
+const companyTypeOpts = CO_TYPES.map(t => [t, t]);
+function formPerson(id, preset = {}) {
+  const p = id ? pe(id) : null;
+  openForm({
+    title: p ? 'Edit person' : 'New person', submit: p ? 'Save changes' : 'Add person',
+    fields: [
+      { name: 'name', label: 'Name', required: true, full: true, dir: 'auto', placeholder: 'Full name, in English or Arabic' },
+      { name: 'role', label: 'Role', dir: 'auto', placeholder: 'e.g. Purchasing manager' },
+      { name: 'company', label: 'Company', type: 'picker', kinds: ['company'], create: 'company', placeholder: 'Search or type a new name' },
+      { name: 'phone', label: 'Mobile', type: 'tel', placeholder: '010 0000 0000' },
+      { name: 'phone2', label: 'Other phone', type: 'tel' },
+      { name: 'email', label: 'Email', type: 'email', full: true },
+      { name: 'tags', label: 'Tags', full: true, dir: 'auto', placeholder: 'Comma separated, e.g. decision maker, pays on time' },
+      { name: 'notes', label: 'Notes', type: 'textarea', full: true, dir: 'auto' },
+    ],
+    values: p ? { ...p, company: p.companyId ? 'company:' + p.companyId : '', tags: (p.tags || []).join(', ') }
+              : { name: preset.name || '', phone: preset.phone || '', company: preset.companyId ? 'company:' + preset.companyId : '' },
+    onSubmit: async v => {
+      const newCo = String(v.company).startsWith('new-company:');
+      const companyId = await resolveCompany(v.company);
+      const data = { name: v.name.trim(), role: v.role.trim(), companyId, phone: v.phone.trim(), phone2: v.phone2.trim(),
+        email: v.email.trim(), tags: splitTags(v.tags), notes: v.notes.trim() };
+      if (p) { await patch(COL.people, p.id, data); return { toast: 'Saved' }; }
+      const nid = await create(COL.people, data);
+      return { toast: `Added ${data.name}${newCo && companyId ? ' and created ' + (co(companyId) || { name: String(v.company).slice(12) }).name : ''}`, open: preset.stay ? null : ['person', nid] };
+    },
+  });
+}
+function formCompany(id, preset = {}) {
+  const c = id ? co(id) : null;
+  openForm({
+    title: c ? 'Edit company' : 'New company', submit: c ? 'Save changes' : 'Add company',
+    fields: [
+      { name: 'name', label: 'Company name', required: true, full: true, dir: 'auto' },
+      { name: 'type', label: 'Type', type: 'select', options: companyTypeOpts },
+      { name: 'status', label: 'Status', type: 'select', options: STATUSES, help: 'Active and In talks accounts are watched for going quiet.' },
+      { name: 'sector', label: 'Sector', type: 'select', options: [['', '—'], ...SECTORS.map(s => [s, s])] },
+      { name: 'city', label: 'City or area', list: 'dl-places', dir: 'auto', placeholder: 'e.g. 10th of Ramadan' },
+      { name: 'phone', label: 'Phone', type: 'tel' },
+      { name: 'email', label: 'Email', type: 'email' },
+      { name: 'website', label: 'Website', full: true, placeholder: 'example.com', dir: 'ltr' },
+      { name: 'address', label: 'Address', full: true, dir: 'auto' },
+      { name: 'notes', label: 'Notes', type: 'textarea', full: true, dir: 'auto' },
+    ],
+    values: c ? c : { name: preset.name || '', type: 'Client', status: 'Prospect' },
+    onSubmit: async v => {
+      const data = { name: v.name.trim(), type: v.type, status: v.status, sector: v.sector, city: v.city.trim(), phone: v.phone.trim(),
+        email: v.email.trim(), website: v.website.trim(), address: v.address.trim(), notes: v.notes.trim() };
+      if (c) { await patch(COL.companies, c.id, data); return { toast: 'Saved' }; }
+      const dup = [...S.companies.values()].find(x => norm(x.name) === norm(data.name));
+      if (dup) throw { msg: `${dup.name} is already in the CRM.` };
+      const nid = await create(COL.companies, data);
+      return { toast: `Added ${data.name}`, open: ['company', nid] };
+    },
+  });
+}
+function formDeal(id, preset = {}) {
+  const d = id ? de(id) : null;
+  openForm({
+    title: d ? 'Edit deal' : 'New deal', submit: d ? 'Save changes' : 'Add deal',
+    fields: [
+      { name: 'title', label: 'What is it?', required: true, full: true, dir: 'auto', placeholder: 'e.g. 2 submersible pumps for the new lift station' },
+      { name: 'company', label: 'Company', type: 'picker', kinds: ['company'], create: 'company', placeholder: 'Search or type a new name',
+        onPick: () => { /* contact list re-sorts to this company's people */ } },
+      { name: 'contact', label: 'Contact person', type: 'picker', kinds: ['person'], ctx: 'company', placeholder: 'Search people',
+        onPick: v => { if (v && !M.pick.company.value) { const p = pe(v.slice(7)); if (p && p.companyId) setPick('company', 'company:' + p.companyId, true); } } },
+      { name: 'type', label: 'Type', type: 'select', options: DEAL_TYPES },
+      { name: 'stage', label: 'Stage', type: 'select', options: STAGES.map(s => [s.id, s.label]) },
+      { name: 'money', label: 'Value', type: 'money' },
+      { name: 'expectedClose', label: 'Expected close', type: 'date' },
+      { name: 'pumpType', label: 'Pump type', list: 'dl-pumps', placeholder: 'e.g. Booster set' },
+      { name: 'brand', label: 'Brand', list: 'dl-brands', placeholder: 'e.g. Grundfos' },
+      { name: 'duty', label: 'Duty point and quantity', type: 'duty', full: true },
+      { name: 'notes', label: 'Notes', type: 'textarea', full: true, dir: 'auto', placeholder: 'Scope, site conditions, competitors, payment terms…' },
+    ],
+    values: d ? { ...d, company: d.companyId ? 'company:' + d.companyId : '', contact: d.personId ? 'person:' + d.personId : '',
+                  money: { value: d.value, currency: d.currency }, duty: d }
+              : { company: preset.companyId ? 'company:' + preset.companyId : '', contact: preset.personId ? 'person:' + preset.personId : '',
+                  stage: preset.stage || 'inquiry', type: 'Supply', money: { currency: 'EGP' } },
+    onSubmit: async v => {
+      const personId = String(v.contact).startsWith('person:') ? v.contact.slice(7) : '';
+      let companyId = await resolveCompany(v.company);
+      if (!companyId && personId) companyId = (pe(personId) || {}).companyId || '';
+      const data = { title: v.title.trim(), companyId, personId, type: v.type, stage: v.stage,
+        value: v.money.value != null && Number.isFinite(v.money.value) ? v.money.value : null, currency: v.money.currency,
+        expectedClose: v.expectedClose || '', pumpType: v.pumpType.trim(), brand: v.brand.trim(),
+        flow: v.duty.flow, head: v.duty.head, qty: v.duty.qty, notes: v.notes.trim() };
+      const closed = s => s === 'won' || s === 'lost';
+      if (d) {
+        if (d.stage !== data.stage) { data.stageChangedAt = nowISO(); data.closedAt = closed(data.stage) ? nowISO() : null; }
+        await patch(COL.deals, d.id, data); return { toast: 'Saved' };
+      }
+      data.stageChangedAt = nowISO(); data.closedAt = closed(data.stage) ? nowISO() : null;
+      const nid = await create(COL.deals, data);
+      return { toast: `Added ${data.title}`, open: ['deal', nid] };
+    },
+  });
+}
+const DUE_QUICK = [['Today', 0], ['Tomorrow', 1], ['In 3 days', 3], ['Next week', 7], ['In 2 weeks', 14], ['No date', '']];
+function formActivity(id, preset = {}) {
+  const a = id ? (S.acts.get(id) || S.extraActs.get(id)) : null;
+  if (id && !a) { toast('That entry was deleted.', 'err'); return; }
+  const fields = [
+    { name: 'kind', label: 'What kind?', type: 'kinds', full: true },
+    { name: 'about', label: 'With or about', type: 'picker', kinds: ['person', 'company', 'deal'], placeholder: 'Search people, companies, deals' },
+    { name: 'at', label: 'When', type: 'datetime' },
+    { name: 'summary', label: 'What happened?', type: 'textarea', required: true, full: true, dir: 'auto', rows: 4,
+      placeholder: 'e.g. Asked for a revised offer with 6 months warranty; site visit next week' },
+  ];
+  if (!a) fields.push({ name: 'fu', label: 'Schedule a follow-up', type: 'check', full: true },
+    { name: 'fuBox', type: 'group', hidden: true, fields: [
+      { name: 'fuTitle', label: 'Follow-up', full: true, dir: 'auto', placeholder: 'e.g. Send the revised quotation' },
+      { name: 'fuDue', label: 'Due', type: 'date', full: true, quick: DUE_QUICK.slice(0, 5) },
+    ] });
+  openForm({
+    title: a ? 'Edit activity' : 'Log activity', submit: a ? 'Save changes' : 'Log it',
+    fields,
+    values: a ? { kind: a.kind, about: aboutVal(a), at: localInput(a.at), summary: a.summary }
+              : { kind: preset.kind || 'call', about: preset.about || '', at: localInput(), fuDue: addDays(today(), 3) },
+    noAutofocus: !!preset.about,
+    after: () => {
+      const cb = $('#f-fu');
+      if (cb) cb.addEventListener('change', () => { $('#f-fuBox').hidden = !cb.checked; if (cb.checked) $('#f-fuTitle').focus(); });
+      if (preset.about) $('#f-summary').focus({ preventScroll: true });
+    },
+    onDelete: a ? async () => { await removeDoc(COL.acts, a.id); S.extraActs.delete(a.id); return { toast: 'Entry deleted' }; } : null,
+    onSubmit: async v => {
+      const links = linkFrom(v.about);
+      const data = { kind: v.kind, at: fromLocalInput(v.at), summary: v.summary.trim(), ...links };
+      if (a) { await patch(COL.acts, a.id, data); if (data.kind !== 'note') await bumpContact(links, data.at); return { toast: 'Saved' }; }
+      await create(COL.acts, data);
+      if (data.kind !== 'note') await bumpContact(links, data.at);
+      let extra = '';
+      if (v.fu && v.fuTitle.trim()) {
+        await create(COL.tasks, { title: v.fuTitle.trim(), due: v.fuDue || '', done: false, doneAt: null, ...links });
+        extra = ' and scheduled the follow-up';
+      }
+      const who = pe(links.personId) || co(links.companyId);
+      return { toast: `Logged ${(KIND[data.kind] || KIND.note).label.toLowerCase()}${who ? ' with ' + who.name : ''}${extra}` };
+    },
+  });
+}
+function formTask(id, preset = {}) {
+  const x = id ? (S.tasks.get(id) || S.doneTasks.get(id)) : null;
+  if (id && !x) { toast('That follow-up was deleted.', 'err'); return; }
+  const fields = [
+    { name: 'title', label: 'Follow-up', required: true, full: true, dir: 'auto', placeholder: 'e.g. Call to confirm delivery date' },
+    { name: 'due', label: 'Due', type: 'date', full: true, quick: DUE_QUICK },
+    { name: 'about', label: 'With or about', type: 'picker', kinds: ['person', 'company', 'deal'], full: true, placeholder: 'Search people, companies, deals' },
+  ];
+  if (x) fields.push({ name: 'done', label: 'Done', type: 'check', full: true });
+  openForm({
+    title: x ? 'Edit follow-up' : 'New follow-up', submit: x ? 'Save changes' : 'Add follow-up',
+    fields,
+    values: x ? { ...x, about: aboutVal(x) } : { due: preset.due != null ? preset.due : today(), about: preset.about || '', title: preset.title || '' },
+    onDelete: x ? async () => { await removeDoc(COL.tasks, x.id); return { toast: 'Follow-up deleted' }; } : null,
+    onSubmit: async v => {
+      const data = { title: v.title.trim(), due: v.due || '', ...linkFrom(v.about) };
+      if (x) {
+        if (!!x.done !== !!v.done) { data.done = !!v.done; data.doneAt = v.done ? nowISO() : null; }
+        await patch(COL.tasks, x.id, data); return { toast: 'Saved' };
+      }
+      await create(COL.tasks, { ...data, done: false, doneAt: null });
+      return { toast: `Follow-up added${data.due ? ' for ' + relDue(data.due).toLowerCase() : ''}` };
+    },
+  });
+}
+function editRecord(kind, id) {
+  if (!guardWrite()) return;
+  if (kind === 'person') formPerson(id); else if (kind === 'company') formCompany(id); else if (kind === 'deal') formDeal(id);
+}
+function newRecord(kind, preset = {}) {
+  if (!guardWrite()) return;
+  closeMenus();
+  if (kind === 'person') formPerson(null, preset);
+  else if (kind === 'company') formCompany(null, preset);
+  else if (kind === 'deal') formDeal(null, preset);
+  else if (kind === 'activity') formActivity(null, preset);
+  else if (kind === 'task') formTask(null, preset);
+}
+
+/* ======================= account, team and import ======================= */
+function onAccount(what) {
+  closeMenus();
+  if (what === 'signout') signOut();
+  else if (what === 'password') formPassword();
+  else if (what === 'team') openTeam();
+  else if (what === 'import') { const f = $('#import-file'); f.value = ''; f.click(); }
+}
+function formPassword() {
+  openForm({
+    title: 'Change password', submit: 'Change password', always: true,
+    intro: '<p class="m-note">Your other devices will be signed out.</p>',
+    fields: [
+      { name: 'cur', label: 'Current password', type: 'password', required: true, full: true },
+      { name: 'pw1', label: 'New password', type: 'password', required: true, full: true, help: 'At least 8 characters.' },
+      { name: 'pw2', label: 'New password again', type: 'password', required: true, full: true },
+    ],
+    onSubmit: async v => {
+      if (v.pw1 !== v.pw2) throw { msg: 'The two new passwords don’t match.' };
+      await api('password', { method: 'POST', body: { current: v.cur, password: v.pw1 } });
+      return { toast: 'Password changed' };
+    },
+  });
+}
+function tempPassword() {
+  const abc = 'abcdefghjkmnpqrstuvwxyz23456789', a = new Uint8Array(10);
+  crypto.getRandomValues(a);
+  const s = Array.from(a, n => abc[n % abc.length]).join('');
+  return s.slice(0, 5) + '-' + s.slice(5);
+}
+const teamFlash = new Map();   // user id -> password to show once
+function teamIntro(users) {
+  const admins = users.filter(u => u.role === 'admin' && u.active).length;
+  return `${storageNote()}<p class="m-note">Members add and edit records. View only can look but not change anything. Admins also manage this list and can import backups.</p>
+  <ul class="team">${users.map(u => {
+    const me = S.me && String(u.id) === String(S.me.id), flash = teamFlash.get(String(u.id));
+    const lock = me || (u.role === 'admin' && u.active && admins <= 1);
+    return `<li class="tm${u.active ? '' : ' off'}"><span class="av sm" aria-hidden="true">${esc(initials(u.name))}</span>
+      <span class="tx"><span class="t">${esc(u.name)}${me ? ' (you)' : ''}</span>
+        <span class="s">${esc(u.email || '')}${u.lastLogin ? ' · last signed in ' + esc(ago(u.lastLogin).toLowerCase()) : ' · hasn’t signed in yet'}</span></span>
+      <span class="ctl">
+        <select data-team="role" data-uid="${esc(u.id)}" aria-label="Role for ${esc(u.name)}"${lock ? ' disabled' : ''}>
+          ${['admin', 'member', 'viewer'].map(r => opt(r, ROLE_LABEL[r], u.role === r)).join('')}</select>
+        <button type="button" class="btn btn-sm" data-team="reset" data-uid="${esc(u.id)}">New password</button>
+        ${me ? '' : `<button type="button" class="btn btn-sm" data-team="active" data-uid="${esc(u.id)}"${u.active && lock ? ' disabled' : ''}>${u.active ? 'Switch off' : 'Switch on'}</button>`}
+      </span>
+      ${flash ? `<div class="secret">New password for ${esc(u.name)}: <span class="mono">${esc(flash)}</span>
+        <button type="button" class="btn btn-ghost btn-sm" data-team="copy" data-text="${esc(flash)}">${ic('copy', 'i-sm')}Copy</button>
+        <span>Send it to them; it won’t be shown again.</span></div>` : ''}
+    </li>`;
+  }).join('')}</ul>
+  <h3 class="eyebrow" style="margin-bottom:10px">Add someone</h3>`;
+}
+function storageNote() {
+  return S.storage ? `<p class="m-note">Records are kept in ${esc(S.storage)}. Download a backup from the account menu every week or two and keep it somewhere safe.</p>` : '';
+}
+async function openTeam() {
+  try { const m = await api('me'); S.storage = m.storage || ''; } catch (e) { /* the note is optional */ }
+  const users = await loadTeam();
+  openForm({
+    title: 'Team and access', submit: 'Add person', cancel: 'Done', always: true,
+    intro: teamIntro(users),
+    fields: [
+      { name: 'tname', label: 'Name', required: true, dir: 'auto' },
+      { name: 'temail', label: 'Email', type: 'email', required: true },
+      { name: 'trole', label: 'Access', type: 'select', options: [['member', 'Member: add and edit'], ['viewer', 'View only'], ['admin', 'Admin']] },
+      { name: 'tpass', label: 'Starting password', help: 'Made for you. Send it to them with the CRM’s address; they can change it after signing in.' },
+    ],
+    values: { trole: 'member', tpass: tempPassword() },
+    noAutofocus: true,
+    onSubmit: async v => {
+      const r = await api('user', { method: 'POST', body: { name: v.tname, email: v.temail, role: v.trole, password: v.tpass } });
+      teamFlash.set(String(r.user.id), v.tpass);
+      await refreshTeam();
+      $('#f-tname').value = ''; $('#f-temail').value = ''; $('#f-tpass').value = tempPassword();
+      return { keepOpen: true, toast: `Added ${r.user.name}` };
+    },
+  });
+  const done = () => { teamFlash.clear(); $('#modal').removeEventListener('close', done); };
+  $('#modal').addEventListener('close', done);
+}
+async function refreshTeam() {
+  const users = await loadTeam();
+  const box = $('#mform .m-b');
+  if (!box || !M.cfg || M.cfg.title !== 'Team and access') return;
+  const grid = box.querySelector('.fgrid');
+  for (const n of Array.from(box.childNodes)) if (n !== grid) n.remove();
+  box.insertAdjacentHTML('afterbegin', teamIntro(users));
+}
+async function teamAction(el) {
+  const uid = el.dataset.uid, act = el.dataset.team, u = S.team.get(String(uid));
+  if (act === 'copy') { copyText(el.dataset.text, el); return; }
+  if (!u) return;
+  const body = { id: Number(uid) };
+  if (act === 'role') body.role = el.value;
+  else if (act === 'active') body.active = !u.active;
+  else if (act === 'reset') body.password = tempPassword();
+  el.disabled = true;
+  try {
+    await api('user', { method: 'POST', body });
+    if (body.password) teamFlash.set(String(uid), body.password);
+    await refreshTeam();
+    toast(act === 'role' ? `${u.name} is now ${ROLE_LABEL[body.role].toLowerCase()}` : act === 'active' ? `${u.name} ${body.active ? 'can sign in again' : 'is switched off'}` : `New password made for ${u.name}`);
+  } catch (e) {
+    toast(e.message || 'That didn’t save.', 'err');
+    await refreshTeam();
+  }
+}
+async function importBackup(file) {
+  if (!file) return;
+  let data;
+  try { data = JSON.parse(await file.text()); } catch (e) { toast('That file isn’t a CRM backup.', 'err'); return; }
+  const n = k => Array.isArray(data[k]) ? data[k].length : 0;
+  const total = n('people') + n('companies') + n('deals') + n('activities') + n('followups') + n('tasks');
+  if (!data || typeof data !== 'object' || !total) { toast('That file has no CRM records in it.', 'err'); return; }
+  openForm({
+    title: 'Import a backup', submit: `Import ${plural(total, 'record')}`, always: true,
+    intro: `<p class="m-note">From <b>${esc(file.name)}</b>: ${[['people', 'person', 'people'], ['companies', 'company', 'companies'], ['deals', 'deal'], ['activities', 'activity', 'activities'], ['followups', 'follow-up'], ['tasks', 'follow-up']]
+      .filter(([k]) => n(k)).map(([k, s, p]) => plural(n(k), s, p)).join(', ')}.</p>
+      <p class="m-note">Records already here with the same ID are replaced by the backup’s version. Everything else stays.</p>`,
+    fields: [],
+    onSubmit: async () => {
+      const r = await api('import', { method: 'POST', body: data });
+      await sync(false);
+      const c = r.counts || {};
+      return { toast: `Imported ${plural(Object.values(c).reduce((a, b) => a + b, 0), 'record')}` };
+    },
+  });
+}
+function bindAccount() {
+  $('#mform').addEventListener('change', e => { const el = e.target.closest('[data-team="role"]'); if (el) teamAction(el); });
+  $('#mform').addEventListener('click', e => { const el = e.target.closest('button[data-team]'); if (el) { e.preventDefault(); teamAction(el); } });
+  $('#import-file').addEventListener('change', e => importBackup(e.target.files && e.target.files[0]));
+}
+
+/* ======================= actions ======================= */
+const dueWords = due => !due ? '' : due === today() ? 'today' : due === addDays(today(), 1) ? 'tomorrow' : fmtDay(due, true);
+async function toggleTask(id) {
+  if (!guardWrite()) return;
+  const x = S.tasks.get(id) || S.doneTasks.get(id); if (!x) return;
+  const done = !x.done;
+  try {
+    await patch(COL.tasks, id, { done, doneAt: done ? nowISO() : null });
+    toast(done ? `Done: ${x.title}` : 'Marked as not done', '', done ? { label: 'Undo', fn: () => patch(COL.tasks, id, { done: false, doneAt: null }) } : null);
+  } catch (e) { writeErr(e); }
+}
+async function snooze(id) {
+  if (!guardWrite()) return;
+  const x = S.tasks.get(id); if (!x) return;
+  const due = addDays(x.due && x.due > today() ? x.due : today(), 1);
+  try { await patch(COL.tasks, id, { due }); toast(`Moved to ${dueWords(due)}`, '', { label: 'Undo', fn: () => patch(COL.tasks, id, { due: x.due || '' }) }); }
+  catch (e) { writeErr(e); }
+}
+async function setStage(id, stage) {
+  const d = de(id);
+  if (!d || !STAGE[stage] || d.stage === stage || !guardWrite()) return;
+  const closed = s => s === 'won' || s === 'lost';
+  const prev = { stage: d.stage || 'inquiry', stageChangedAt: d.stageChangedAt || null, closedAt: d.closedAt || null };
+  try {
+    await patch(COL.deals, id, { stage, stageChangedAt: nowISO(), closedAt: closed(stage) ? nowISO() : null });
+    toast(`${d.title}: ${STAGE[stage].label}`, '', { label: 'Undo', fn: () => patch(COL.deals, id, prev) });
+  } catch (e) { writeErr(e); }
+}
+let armTimer = 0;
+async function armDelete(kind, id) {
+  if (!guardWrite()) return;
+  const key = kind + ':' + id;
+  if (S.armed !== key) {
+    S.armed = key; renderSheet(false);
+    clearTimeout(armTimer);
+    armTimer = setTimeout(() => { if (S.armed === key) { S.armed = null; renderSheet(false); } }, 4000);
+    return;
+  }
+  S.armed = null;
+  const col = kind === 'person' ? COL.people : kind === 'company' ? COL.companies : COL.deals;
+  const rec = kind === 'person' ? pe(id) : kind === 'company' ? co(id) : de(id);
+  try {
+    await removeDoc(col, id);
+    closeSheet();
+    const body = rec ? Object.fromEntries(Object.entries(rec).filter(([k]) => k !== 'id')) : null;
+    toast(`Deleted ${rec ? rec.name || rec.title : ''}`.trim(), '', body ? { label: 'Undo', fn: () => withRetry(() => S.db.collection(col).doc(id).set(body)) } : null);
+  } catch (e) { writeErr(e); }
+}
+function copyText(text, el) {
+  const fallback = () => {
+    const m = el && (el.closest('.ph-line, .lrow') || el.parentElement);
+    const t = m && m.querySelector('.mono');
+    if (!t) { toast('Copy isn’t available here.', 'err'); return; }
+    const r = document.createRange(); r.selectNodeContents(t);
+    const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+    toast('Selected. Press Ctrl+C to copy.');
+  };
+  try {
+    const p = navigator.clipboard && navigator.clipboard.writeText(text);
+    if (p && p.then) p.then(() => toast('Copied ' + text), fallback); else fallback();
+  } catch (e) { fallback(); }
+}
+
+/* ======================= menus & search ======================= */
+function toggleMenu(which) {
+  const menu = $('#' + which + '-menu'), btn = $('#' + which + '-btn');
+  const opening = menu.hidden;
+  closeMenus();
+  if (!opening) return;
+  if (which === 'new' && !guardWrite()) return;
+  menu.hidden = false; btn.setAttribute('aria-expanded', 'true');
+  const f = menu.querySelector('button:not([disabled])'); if (f) f.focus();
+}
+function closeMenus() {
+  for (const w of ['new', 'more']) {
+    const m = $('#' + w + '-menu');
+    if (m && !m.hidden) { m.hidden = true; $('#' + w + '-btn').setAttribute('aria-expanded', 'false'); }
+  }
+}
+let qOn = 0;
+function renderSearch() {
+  const inp = $('#q'), box = $('#q-res'), q = inp.value;
+  if (!q.trim()) { box.hidden = true; inp.setAttribute('aria-expanded', 'false'); return; }
+  const r = searchAll(q, 6);
+  let i = 0, html = '';
+  const item = (kind, id, t, s) => {
+    const n = i++;
+    return `<button type="button" class="q-item${n === qOn ? ' on' : ''}" role="option" data-open="${kind}" data-id="${esc(id)}">
+      <span class="av${kind === 'person' ? '' : ' co'}" aria-hidden="true">${kind === 'deal' ? ic('deal', 'i-sm') : esc(initials(t))}</span>
+      <span class="tx"><bdi class="t">${esc(t)}</bdi>${s ? `<span class="s"><bdi>${esc(s)}</bdi></span>` : ''}</span></button>`;
+  };
+  if (r.people.length) html += '<p class="q-group eyebrow">People</p>' + r.people.map(p => item('person', p.id, p.name, [p.role, (co(p.companyId) || {}).name, p.phone].filter(Boolean).join(' · '))).join('');
+  if (r.companies.length) html += '<p class="q-group eyebrow">Companies</p>' + r.companies.map(c => item('company', c.id, c.name, [c.type, c.city].filter(Boolean).join(' · '))).join('');
+  if (r.deals.length) html += '<p class="q-group eyebrow">Deals</p>' + r.deals.map(d => item('deal', d.id, d.title,
+    [(co(d.companyId) || {}).name, (STAGE[d.stage] || {}).label, d.value ? money(d.value, d.currency, true) : ''].filter(Boolean).join(' · '))).join('');
+  if (!i) {
+    const phone = isPhoneQuery(q), v = esc(q.trim());
+    html = `<div class="q-empty">Nothing matches “${v}”.${canEdit() ? ` <button type="button" class="link" data-new="person" ${phone ? `data-phone="${v}"` : `data-name="${v}"`}>Add ${phone ? 'a person with this number' : '“' + v + '” as a person'}</button>` : ''}</div>`;
+  }
+  if (qOn >= i) qOn = Math.max(0, i - 1);
+  box.innerHTML = html; box.hidden = false; inp.setAttribute('aria-expanded', 'true');
+}
+function clearSearch(blur) {
+  const inp = $('#q');
+  inp.value = ''; $('#q-res').hidden = true; inp.setAttribute('aria-expanded', 'false');
+  document.body.classList.remove('searching');
+  if (blur) inp.blur();
+}
+function focusSearch() {
+  if (S.sheet) closeSheet();
+  if (matchMedia('(max-width: 900px)').matches) document.body.classList.add('searching');
+  const q = $('#q'); q.focus(); q.select();
+}
+const sheetPreset = () => S.sheet ? { about: S.sheet.kind + ':' + S.sheet.id } : {};
+
+/* ======================= event wiring ======================= */
+function onClick(e) {
+  const t = e.target;
+  if (t.closest('#toast-act')) {
+    const fn = toastFn; $('#toast').className = 'toast'; toastFn = null;
+    if (fn) Promise.resolve().then(fn).then(() => toast('Undone')).catch(writeErr);
+    return;
+  }
+  const m = t.closest('[data-m]');
+  if (m && m.closest('#modal')) { onModalClick(m); return; }
+  if (t === $('#sheet')) { closeSheet(); return; }
+  if (!t.closest('.menu-wrap')) closeMenus();
+  if (!t.closest('#search') && !t.closest('#q-open')) {
+    $('#q-res').hidden = true;
+    if (!$('#q').value.trim()) document.body.classList.remove('searching');
+  }
+  if (t.closest('#new-btn')) { toggleMenu('new'); return; }
+  if (t.closest('#more-btn')) { toggleMenu('more'); return; }
+  if (t.closest('#q-open')) { focusSearch(); return; }
+  const el = t.closest('[data-act], [data-acct], [data-new], [data-export], [data-go], [data-open], a[href]');
+  if (!el) return;
+  if (el.closest('#q-res')) clearSearch(false);
+  if (el.dataset.acct) { onAccount(el.dataset.acct); return; }
+  if (el.dataset.export) { doExport(el.dataset.export); return; }
+  if (el.dataset.new) {
+    const d = el.dataset, preset = {};
+    if (d.stage) preset.stage = d.stage;
+    if (d.name) preset.name = d.name;
+    if (d.phone) preset.phone = d.phone;
+    newRecord(d.new, Object.keys(preset).length ? preset : sheetPreset());
+    return;
+  }
+  if (el.dataset.act) { onAct(el.dataset.act, el); return; }
+  if (el.dataset.go) {
+    e.preventDefault(); closeMenus();
+    if (S.sheet) closeSheet();
+    go(el.dataset.go);
+    return;
+  }
+  if (el.dataset.open) { closeMenus(); openSheet(el.dataset.open, el.dataset.id); return; }
+  // plain links (WhatsApp, websites) open in a new tab on their own
+}
+function onAct(act, el) {
+  const d = el.dataset;
+  switch (act) {
+    case 'close-sheet': closeSheet(); break;
+    case 'toggle-task': toggleTask(d.id); break;
+    case 'snooze': snooze(d.id); break;
+    case 'edit-task': if (guardWrite()) formTask(d.id); break;
+    case 'edit-act': if (guardWrite()) formActivity(d.id); break;
+    case 'log-for': newRecord('activity', { about: d.about }); break;
+    case 'task-for': newRecord('task', { about: d.about }); break;
+    case 'deal-for': newRecord('deal', { personId: d.person || '', companyId: d.company || '' }); break;
+    case 'person-for': newRecord('person', { companyId: d.company || '', stay: true }); break;
+    case 'edit': editRecord(d.kind, d.id); break;
+    case 'delete': armDelete(d.kind, d.id); break;
+    case 'stage': setStage(d.id, d.stage); break;
+    case 'copy': copyText(d.text, el); break;
+    case 'closed-all': S.ui.closed = 'all'; savePrefs(); render(); break;
+  }
+}
+function onModalClick(m) {
+  const k = m.dataset.m;
+  if (k === 'close') { closeModal(); return; }
+  if (k === 'quick') { const inp = $('#' + m.dataset.target); inp.value = m.dataset.days === '' ? '' : addDays(today(), Number(m.dataset.days)); inp.dispatchEvent(new Event('change')); return; }
+  if (k === 'pick-clear') { const n = m.dataset.name; setPick(n, ''); const inp = $('#f-' + n); inp.focus(); renderPickList(n); return; }
+  if (k === 'delete') {
+    if (!M.armed) {
+      M.armed = true; m.classList.add('armed'); m.querySelector('span').textContent = 'Click again to delete';
+      setTimeout(() => { if (m.isConnected) { M.armed = false; m.classList.remove('armed'); m.querySelector('span').textContent = 'Delete'; } }, 4000);
+      return;
+    }
+    const cfg = M.cfg; if (!cfg || M.busy) return;
+    M.busy = true;
+    Promise.resolve().then(() => cfg.onDelete()).then(r => { closeModal(); if (r && r.toast) toast(r.toast); })
+      .catch(err => { $('#m-err').textContent = errText(err); }).finally(() => { M.busy = false; });
+  }
+}
+async function submitForm(e) {
+  e.preventDefault();
+  const cfg = M.cfg; if (!cfg || M.busy) return;
+  const err = $('#m-err'); err.textContent = '';
+  $$('#mform .fld.bad').forEach(f => f.classList.remove('bad'));
+  const v = {};
+  const flag = (name, msg) => { err.textContent = msg; const inp = $('#f-' + name); if (inp) { inp.closest('.fld').classList.add('bad'); inp.focus(); } };
+  try { for (const fd of flatFields(cfg.fields)) v[fd.name] = getField(fd); }
+  catch (x) { if (x && x.field) { flag(x.field, x.msg); return; } throw x; }
+  for (const fd of flatFields(cfg.fields)) if (fd.required && !String(v[fd.name] ?? '').trim()) { flag(fd.name, 'Fill in the highlighted field.'); return; }
+  if (!cfg.always && !canEdit()) { err.textContent = errText({ code: 'readonly' }); return; }
+  M.busy = true;
+  const btn = $('#m-submit'); btn.disabled = true;
+  try {
+    const r = (await cfg.onSubmit(v)) || {};
+    if (r.keepOpen) { if (r.toast) toast(r.toast); return; }
+    closeModal();
+    if (r.toast) toast(r.toast);
+    if (r.open && !S.sheet) { openSheet(r.open[0], r.open[1]); if (S.sheet) S.sheet.pending = true; renderSheet(false); }
+  } catch (x) {
+    err.textContent = x && x.msg ? x.msg : errText(x);
+    if (x && x.code === 'invalid_argument' && !S.writeKnown) { S.canWrite = false; scheduleRender(); }
+  } finally { M.busy = false; if (btn.isConnected) btn.disabled = false; }
+}
+const pickName = el => el && el.closest && el.closest('.pick') ? el.closest('.pick').dataset.pick : null;
+function onFormKey(e) {
+  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && e.target.tagName === 'TEXTAREA') { e.preventDefault(); $('#mform').requestSubmit(); return; }
+  const n = e.target.getAttribute('role') === 'combobox' ? pickName(e.target) : null;
+  if (!n) return;
+  const list = $(`#f-${n}-list`), st = M.pick[n];
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); if (list.hidden) renderPickList(n); else movePick(n, e.key === 'ArrowDown' ? 1 : -1); }
+  else if (e.key === 'Enter') {
+    if (!list.hidden) {
+      e.preventDefault();
+      if (st.items && st.on >= 0 && st.items[st.on]) { setPick(n, st.items[st.on]); const c = $(`#f-${n}-sel button`); if (c) c.focus(); }
+    }
+  } else if (e.key === 'Escape' && !list.hidden) {
+    // cancelling the keydown keeps the dialog open; the next Escape closes it
+    e.preventDefault(); e.stopPropagation(); closePick(n);
+  }
+}
+function onFormMouseDown(e) {
+  const li = e.target.closest('.pick-list li[data-i]'); if (!li) return;
+  e.preventDefault();
+  const n = pickName(li), st = M.pick[n];
+  if (st && st.items) { setPick(n, st.items[Number(li.dataset.i)]); const c = $(`#f-${n}-sel button`); if (c) c.focus(); }
+}
+async function quickAdd(e) {
+  e.preventDefault();
+  const id = e.currentTarget.id, inp = $('#' + id + '-title'), sel = $('#' + id + '-due');
+  const title = inp.value.trim();
+  if (!title) { inp.focus(); return; }
+  if (!guardWrite()) return;
+  const due = sel.value === '' ? '' : addDays(today(), Number(sel.value));
+  try {
+    await create(COL.tasks, { title, due, done: false, doneAt: null, personId: '', companyId: '', dealId: '' });
+    inp.value = ''; inp.focus();
+    toast(`Follow-up added${due ? ' for ' + dueWords(due) : ''}`);
+  } catch (err) { writeErr(err); }
+}
+function onKey(e) {
+  if (e.defaultPrevented || !S.me) return;
+  const t = e.target, tag = (t.tagName || '').toLowerCase();
+  const typing = tag === 'input' || tag === 'textarea' || tag === 'select' || t.isContentEditable;
+  if ((e.key === 'Enter' || e.key === ' ') && !typing && tag !== 'button' && tag !== 'a' && t.matches && t.matches('[data-open][tabindex]')) { e.preventDefault(); t.click(); return; }
+  const menu = t.closest && t.closest('.menu');
+  if (menu && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+    e.preventDefault();
+    const items = $$('button:not([disabled])', menu), i = items.indexOf(t);
+    const next = items[(i + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length]; if (next) next.focus();
+    return;
+  }
+  if (e.key === 'Escape' && (!$('#new-menu').hidden || !$('#more-menu').hidden)) {
+    const which = $('#new-menu').hidden ? 'more' : 'new'; closeMenus(); $('#' + which + '-btn').focus(); e.preventDefault(); return;
+  }
+  if (typing || e.metaKey || e.ctrlKey || e.altKey || $('#modal').open) return;
+  const k = e.key.toLowerCase();
+  if (e.key === '/') { e.preventDefault(); focusSearch(); }
+  else if (k === 'l') { e.preventDefault(); newRecord('activity', sheetPreset()); }
+  else if (k === 'f') { e.preventDefault(); newRecord('task', sheetPreset()); }
+  else if (k === 'n' && !S.sheet) { e.preventDefault(); toggleMenu('new'); }
+}
+function bind() {
+  document.addEventListener('click', onClick);
+  document.addEventListener('keydown', onKey);
+  const form = $('#mform');
+  form.addEventListener('submit', e => { submitForm(e).catch(x => { console.error(x); $('#m-err').textContent = 'Something went wrong. Try again.'; M.busy = false; }); });
+  form.addEventListener('keydown', onFormKey);
+  form.addEventListener('mousedown', onFormMouseDown);
+  form.addEventListener('input', e => { if (e.target.getAttribute('role') === 'combobox') renderPickList(pickName(e.target)); });
+  form.addEventListener('focusin', e => { if (e.target.getAttribute('role') === 'combobox') renderPickList(pickName(e.target)); });
+  form.addEventListener('focusout', e => {
+    if (e.target.getAttribute('role') !== 'combobox') return;
+    const n = pickName(e.target);
+    setTimeout(() => { if (document.activeElement !== e.target) closePick(n); }, 120);
+  });
+  const rehome = dlg => { const t = $('#toast'); if (t.parentElement === dlg) ($('#sheet').open && dlg !== $('#sheet') ? $('#sheet') : document.body).appendChild(t); };
+  $('#modal').addEventListener('close', () => { M.cfg = null; rehome($('#modal')); });
+  $('#sheet').addEventListener('close', () => { S.sheet = null; S.armed = null; rehome($('#sheet')); });
+  $$('form[data-qadd]').forEach(f => f.addEventListener('submit', quickAdd));
+  $('#deal-type').addEventListener('click', e => { const b = e.target.closest('button[data-type]'); if (!b) return; S.ui.dealType = b.dataset.type; savePrefs(); render(); });
+  const bindSel = (id, key) => $(id).addEventListener('change', e => { S.ui[key] = e.target.value; savePrefs(); render(); });
+  bindSel('#closed-range', 'closed'); bindSel('#people-type', 'peopleType'); bindSel('#people-sort', 'peopleSort');
+  bindSel('#co-type', 'coType'); bindSel('#co-status', 'coStatus'); bindSel('#co-sort', 'coSort');
+  $('#people-q').addEventListener('input', e => { S.ui.peopleQ = e.target.value; render(); });
+  $('#co-q').addEventListener('input', e => { S.ui.coQ = e.target.value; render(); });
+  $('#show-done').addEventListener('click', () => { S.ui.showDone = !S.ui.showDone; render(); });
+  const q = $('#q');
+  q.addEventListener('input', () => { qOn = 0; renderSearch(); });
+  q.addEventListener('focus', () => { if (q.value.trim()) renderSearch(); });
+  q.addEventListener('blur', () => setTimeout(() => { if (document.activeElement !== q && !q.value.trim()) document.body.classList.remove('searching'); }, 150));
+  q.addEventListener('keydown', e => {
+    const items = $$('#q-res .q-item');
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      if (!items.length) return; e.preventDefault();
+      qOn = (qOn + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length;
+      items.forEach((it, i) => it.classList.toggle('on', i === qOn)); items[qOn].scrollIntoView({ block: 'nearest' });
+    } else if (e.key === 'Enter') { e.preventDefault(); const it = items[qOn] || items[0]; if (it) it.click(); }
+    else if (e.key === 'Escape') { e.preventDefault(); clearSearch(true); }
+  });
+  // pipeline drag and drop (mouse); on touch screens, open a card and tap a stage
+  const board = $('#board');
+  board.addEventListener('dragstart', e => {
+    const card = e.target.closest('.card'); if (!card || !canEdit()) { e.preventDefault(); return; }
+    S.dragId = card.dataset.id; card.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', card.dataset.id);
+  });
+  board.addEventListener('dragover', e => {
+    const col = e.target.closest('.col'); if (!col || !S.dragId) return;
+    e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+    $$('#board .col.over').forEach(c => { if (c !== col) c.classList.remove('over'); }); col.classList.add('over');
+  });
+  board.addEventListener('dragleave', e => { const col = e.target.closest('.col'); if (col && !col.contains(e.relatedTarget)) col.classList.remove('over'); });
+  board.addEventListener('drop', e => {
+    const col = e.target.closest('.col'); if (!col) return;
+    e.preventDefault();
+    const id = S.dragId || e.dataTransfer.getData('text/plain');
+    endDrag();
+    if (id) setStage(id, col.dataset.stage);
+  });
+  board.addEventListener('dragend', endDrag);
+  window.addEventListener('hashchange', () => { const h = location.hash.slice(1); if (VIEWS.includes(h) && h !== S.view) go(h, false); });
+  setInterval(() => { if (S.day !== today()) { S.day = today(); render(); } }, 60000);
+}
+function endDrag() {
+  $$('#board .dragging').forEach(c => c.classList.remove('dragging'));
+  $$('#board .col.over').forEach(c => c.classList.remove('over'));
+  S.dragId = null;
+  if (S.boardDirty) { S.boardDirty = false; scheduleRender(); }
+}
+
+/* ======================= export ======================= */
+function loadXLSX() {
+  if (window.XLSX) return Promise.resolve(window.XLSX);
+  return new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+    s.onload = () => window.XLSX ? res(window.XLSX) : rej(new Error('The Excel library didn’t load. Try the JSON backup.'));
+    s.onerror = () => rej(new Error('The Excel library couldn’t be loaded. Try the JSON backup.'));
+    document.head.appendChild(s);
+  });
+}
+async function doExport(fmt) {
+  closeMenus();
+  if (!S.dl) { toast('Downloads aren’t available in this view.', 'err'); return; }
+  if (S.phase !== 'live') { toast('Your records haven’t loaded yet.', 'err'); return; }
+  const stamp = today();
+  const people = [...S.people.values()].sort(byName), companies = [...S.companies.values()].sort(byName);
+  const deals = [...S.deals.values()].sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
+  const acts = allActs().sort(byAtDesc), tasks = allTasks().sort(byDue);
+  const strip = r => Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'by'));
+  try {
+    let res;
+    if (fmt === 'json') {
+      const data = { app: 'OUFCO CRM', exportedAt: nowISO(), people: people.map(strip), companies: companies.map(strip),
+        deals: deals.map(strip), activities: acts.map(strip), followups: tasks.map(strip) };
+      res = saveFile(`oufco-crm-backup-${stamp}.json`, JSON.stringify(data, null, 2), 'application/json');
+    } else {
+      toast('Preparing the Excel file…');
+      const X = await loadXLSX();
+      const wb = X.utils.book_new();
+      const add = (name, head, rows, widths) => { const ws = X.utils.aoa_to_sheet([head, ...rows]); ws['!cols'] = widths.map(w => ({ wch: w })); X.utils.book_append_sheet(wb, ws, name); };
+      const cn = id => (co(id) || {}).name || '', pn = id => (pe(id) || {}).name || '', dn = id => (de(id) || {}).title || '';
+      const when = iso => iso ? `${isoDay(iso)} ${fmtTime(new Date(iso))}` : '';
+      add('People', ['Name', 'Role', 'Company', 'Mobile', 'Other phone', 'Email', 'Tags', 'Last contact', 'Notes', 'Added'],
+        people.map(p => [p.name, p.role || '', cn(p.companyId), p.phone || '', p.phone2 || '', p.email || '', (p.tags || []).join(', '),
+          isoDay(S.lc.p.get(p.id)), p.notes || '', isoDay(p.createdAt)]), [28, 22, 28, 18, 18, 28, 24, 13, 40, 12]);
+      add('Companies', ['Name', 'Type', 'Sector', 'Status', 'City or area', 'Phone', 'Email', 'Website', 'Address', 'Last contact', 'Notes', 'Added'],
+        companies.map(c => [c.name, c.type || '', c.sector || '', c.status || '', c.city || '', c.phone || '', c.email || '', c.website || '',
+          c.address || '', isoDay(S.lc.c.get(c.id)), c.notes || '', isoDay(c.createdAt)]), [30, 12, 15, 11, 18, 18, 26, 24, 30, 13, 40, 12]);
+      add('Deals', ['Title', 'Company', 'Contact', 'Type', 'Stage', 'Value', 'Currency', 'Expected close', 'Pump type', 'Brand', 'Flow (m3/h)', 'Head (m)', 'Qty', 'Notes', 'Added', 'Closed'],
+        deals.map(d => [d.title, cn(d.companyId), pn(d.personId), d.type || '', (STAGE[d.stage] || {}).label || '', d.value == null ? '' : Number(d.value),
+          d.currency || '', d.expectedClose || '', d.pumpType || '', d.brand || '', num(d.flow) || '', num(d.head) || '', num(d.qty) || '',
+          d.notes || '', isoDay(d.createdAt), isoDay(d.closedAt)]), [36, 28, 22, 14, 12, 14, 9, 14, 16, 12, 11, 9, 6, 40, 12, 12]);
+      add('Activity', ['When', 'Type', 'Summary', 'Person', 'Company', 'Deal'],
+        acts.map(a => [when(a.at), (KIND[a.kind] || KIND.note).label, a.summary || '', pn(a.personId), cn(a.companyId), dn(a.dealId)]), [17, 11, 60, 24, 28, 30]);
+      add('Follow-ups', ['Follow-up', 'Due', 'Done', 'Person', 'Company', 'Deal'],
+        tasks.map(x => [x.title, x.due || '', x.done ? 'Yes' : 'No', pn(x.personId), cn(x.companyId), dn(x.dealId)]), [44, 12, 7, 24, 28, 30]);
+      const buf = X.write(wb, { bookType: 'xlsx', type: 'array' });
+      res = saveFile(`oufco-crm-${stamp}.xlsx`, buf, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    }
+    if (res && res.status === 'saved') toast('Downloaded');
+  } catch (e) {
+    const code = e && e.code;
+    if (code === 'declined') return;
+    if (code === 'rate_limited') toast('A save is already waiting for your answer.', 'err');
+    else if (code === 'extension_not_enabled' || code === 'rejected_extension') toast('That file type can’t be saved here. Try the JSON backup.', 'err');
+    else toast(!code && e && e.message ? e.message : 'The export didn’t work. Try again.', 'err');
+  }
+}
+
+/* ======================= render & routing ======================= */
+let rq = 0;
+function scheduleRender() { if (rq) return; rq = requestAnimationFrame(() => { rq = 0; render(); }); }
+function applyMode() {
+  document.body.classList.toggle('ro', S.phase === 'live' && !canEdit());
+  let msg = '';
+  if (S.netErr) msg = 'Can’t reach the server right now. Changes may not save until the connection is back; the page keeps retrying.';
+  else if (S.phase === 'live' && !S.canWrite) msg = 'View only. You can browse records but not change them.';
+  const b = $('#banner'); b.textContent = msg; b.hidden = !msg;
+  $('#export-note').textContent = 'Exports include every person, company, deal, activity and follow-up.';
+}
+function updateBadges() {
+  const t = today(); let n = 0;
+  for (const x of S.tasks.values()) if (x.due && x.due <= t) n++;
+  $('#tab-ct').innerHTML = n ? `${n}<span class="sr"> due</span>` : '';
+  const b = $('#bnav-ct'); b.textContent = n ? String(n) : ''; b.hidden = !n;
+}
+function render() {
+  S.lc = lastContactMap();
+  applyMode();
+  updateBadges();
+  keepFocus($('#main'), () => {
+    if (S.view === 'today') renderToday();
+    else if (S.view === 'pipeline') renderPipeline();
+    else if (S.view === 'people') renderPeople();
+    else if (S.view === 'companies') renderCompanies();
+    else renderFollowups();
+  });
+  if (S.sheet) renderSheet(false);
+  if (!$('#q-res').hidden) renderSearch();
+}
+function go(view, setHash = true) {
+  if (!VIEWS.includes(view)) view = 'today';
+  const changed = S.view !== view;
+  S.view = view;
+  for (const v of VIEWS) $('#v-' + v).hidden = v !== view;
+  $$('.tab, .bnav a').forEach(a => { if (a.dataset.go === view) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+  if (setHash && location.hash !== '#' + view) { try { history.replaceState(null, '', '#' + view); } catch (e) { /* not allowed here */ } }
+  savePrefs();
+  render();
+  if (changed) window.scrollTo(0, 0);
+}
+function hydrateStatic() {
+  $$('[data-ic]').forEach(el => { el.outerHTML = ic(el.dataset.ic); });
+  $('#dl-places').innerHTML = PLACES.map(p => `<option value="${esc(p)}"></option>`).join('');
+  $('#dl-brands').innerHTML = BRANDS.map(p => `<option value="${esc(p)}"></option>`).join('');
+  $('#dl-pumps').innerHTML = PUMP_TYPES.map(p => `<option value="${esc(p)}"></option>`).join('');
+  $('#deal-type').innerHTML = ['all', ...DEAL_TYPES].map(t => `<button type="button" data-type="${esc(t)}" aria-pressed="false">${t === 'all' ? 'All types' : esc(t)}</button>`).join('');
+  const typeOpts = '<option value="all">All company types</option>' + CO_TYPES.map(t => opt(t, t === 'Other' ? 'Other types' : t + 's')).join('');
+  $('#people-type').innerHTML = typeOpts; $('#co-type').innerHTML = typeOpts;
+  $('#co-status').innerHTML = '<option value="all">Any status</option>' + STATUSES.map(s => opt(s, s)).join('');
+  for (const [id, k] of [['#people-type', 'peopleType'], ['#people-sort', 'peopleSort'], ['#co-type', 'coType'], ['#co-status', 'coStatus'], ['#co-sort', 'coSort'], ['#closed-range', 'closed']]) {
+    const el = $(id); el.value = S.ui[k]; if (el.value !== S.ui[k]) { S.ui[k] = el.options[0].value; el.value = S.ui[k]; }
+  }
+  if (!['all', ...DEAL_TYPES].includes(S.ui.dealType)) S.ui.dealType = 'all';
+}
+
+boot();
+})();
+</script>
+</body>
+</html>
